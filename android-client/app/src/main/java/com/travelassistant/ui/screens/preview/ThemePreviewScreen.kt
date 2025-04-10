@@ -1,13 +1,29 @@
 package com.travelassistant.ui.screens.preview
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.travelassistant.ui.theme.TravelAssistantTheme
@@ -22,16 +38,9 @@ fun ThemePreviewScreen() {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                    .padding(16.dp)
             ) {
-                // Typography Preview
-                Text(
-                    text = "Typography Preview",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                
+                // Text styles
                 Text(
                     text = "Headline Large",
                     style = MaterialTheme.typography.headlineLarge
@@ -41,39 +50,33 @@ fun ThemePreviewScreen() {
                     style = MaterialTheme.typography.headlineMedium
                 )
                 Text(
-                    text = "Title Large",
-                    style = MaterialTheme.typography.titleLarge
-                )
-                Text(
-                    text = "Body Large",
-                    style = MaterialTheme.typography.bodyLarge
+                    text = "Headline Small",
+                    style = MaterialTheme.typography.headlineSmall
                 )
                 
                 Spacer(modifier = Modifier.height(16.dp))
                 
-                // Button Preview
-                Text(
-                    text = "Button Preview",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                
+                // Buttons
                 Button(
-                    onClick = { },
+                    onClick = { /* Handle click */ },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Primary Button")
                 }
                 
+                Spacer(modifier = Modifier.height(8.dp))
+                
                 OutlinedButton(
-                    onClick = { },
+                    onClick = { /* Handle click */ },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Secondary Button")
                 }
                 
+                Spacer(modifier = Modifier.height(8.dp))
+                
                 TextButton(
-                    onClick = { },
+                    onClick = { /* Handle click */ },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Text Button")
@@ -81,69 +84,30 @@ fun ThemePreviewScreen() {
                 
                 Spacer(modifier = Modifier.height(16.dp))
                 
-                // Card Preview
-                Text(
-                    text = "Card Preview",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                
+                // Cards
                 Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(120.dp),
-                    shape = RoundedCornerShape(8.dp)
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(
-                            text = "Flight Card Example",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        Text(
-                            text = "From: New York (JFK)\nTo: London (LHR)",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                        Text(
-                            text = "$599",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
+                    Text(
+                        text = "Card Content",
+                        modifier = Modifier.padding(16.dp)
+                    )
                 }
                 
                 Spacer(modifier = Modifier.height(16.dp))
                 
-                // Status Colors Preview
-                Text(
-                    text = "Status Colors Preview",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                
+                // Status indicators
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    StatusColorBox(
-                        color = MaterialTheme.colorScheme.success,
-                        label = "Success"
+                    Text(
+                        text = "Left",
+                        modifier = Modifier.fillMaxWidth(0.5f)
                     )
-                    StatusColorBox(
-                        color = MaterialTheme.colorScheme.error,
-                        label = "Error"
-                    )
-                    StatusColorBox(
-                        color = MaterialTheme.colorScheme.warning,
-                        label = "Warning"
-                    )
-                    StatusColorBox(
-                        color = MaterialTheme.colorScheme.info,
-                        label = "Info"
+                    Text(
+                        text = "Right",
+                        modifier = Modifier.fillMaxWidth(0.5f)
                     )
                 }
             }
@@ -153,12 +117,12 @@ fun ThemePreviewScreen() {
 
 @Composable
 private fun StatusColorBox(
-    color: androidx.compose.ui.graphics.Color,
+    color: Color,
     label: String
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.weight(1f)
+        modifier = Modifier.fillMaxWidth(0.5f)
     ) {
         Box(
             modifier = Modifier

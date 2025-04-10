@@ -1,0 +1,151 @@
+// Application-level build file where you can add configuration options for only this module.
+// This file configures the build settings specifically for the app module.
+
+// Define the plugins required for this module
+plugins {
+    id 'com.android.application'  // The core Android application plugin
+    id 'org.jetbrains.kotlin.android'  // Plugin for Kotlin support in Android
+    id 'com.google.devtools.ksp'  // Plugin for Kotlin Symbol Processing
+    id 'androidx.room'  // Plugin for Room database
+}
+
+// Main Android configuration block
+android {
+    // The package name for your app
+    namespace 'com.travelassistant'
+    // The Android SDK version to compile against
+    compileSdk 34
+
+    // Default configuration for the application
+    defaultConfig {
+        // The unique identifier for your app on the Play Store
+        applicationId "com.travelassistant"
+        // Minimum Android version your app supports
+        minSdk 24
+        // Android version your app is targeting
+        targetSdk 34
+        // Internal version number, increment for each release
+        versionCode 1
+        // User-visible version number
+        versionName "1.0"
+
+        // Configuration for Android testing
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        // Support for vector drawables
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    // Configure different build variants
+    buildTypes {
+        // Configuration for release version
+        release {
+            // Disable code shrinking for now
+            minifyEnabled false
+            // ProGuard rules for code optimization
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    // Java version compatibility settings
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    // Kotlin-specific options
+    kotlinOptions {
+        // Target JVM version for Kotlin
+        jvmTarget = '17'
+        freeCompilerArgs += [
+            "-Xjvm-default=all"
+        ]
+    }
+
+    // Add JVM arguments for kapt
+    kapt {
+        correctErrorTypes true
+        useBuildCache true
+        javacOptions {
+            option("-Xmaxerrs", 500)
+            option("--add-exports", "jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED")
+            option("--add-exports", "jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED")
+            option("--add-exports", "jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED")
+            option("--add-exports", "jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED")
+            option("--add-exports", "jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED")
+            option("--add-exports", "jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED")
+            option("--add-exports", "jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED")
+            option("--add-exports", "jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED")
+        }
+    }
+
+    // Enable required build features
+    buildFeatures {
+        // Enable Jetpack Compose for UI
+        compose true
+        buildConfig true  // Explicitly enable BuildConfig generation
+    }
+
+    // Jetpack Compose specific options
+    composeOptions {
+        // Compose compiler version must match the library version
+        kotlinCompilerExtensionVersion '1.5.4'
+    }
+
+    // Configure how resources are packaged
+    packagingOptions {
+        resources {
+            // Exclude unnecessary legal files
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+
+    // Add SDK tools version compatibility
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
+
+// Room schema export configuration
+room {
+    schemaDirectory "$projectDir/schemas"
+}
+
+// Dependencies required by the app
+dependencies {
+    // Core Android and Kotlin dependencies
+    implementation 'androidx.core:core-ktx:1.12.0'                 // Kotlin extensions for Android core
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'// Lifecycle components
+    implementation 'androidx.activity:activity-compose:1.7.0'      // Activity support for Compose
+    implementation platform('androidx.compose:compose-bom:2023.08.00')
+
+    // Jetpack Compose dependencies
+    implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.ui:ui-graphics'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.compose.material:material-icons-core'
+    implementation 'androidx.compose.material:material-icons-extended'
+
+    // Room dependencies
+    def room_version = "2.6.1"
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    ksp "androidx.room:room-compiler:$room_version"
+
+    // Gson for JSON conversion
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+    // Testing dependencies
+    testImplementation 'junit:junit:4.13.2'                               // Unit testing framework
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'            // Android testing support
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'// UI testing framework
+    androidTestImplementation platform('androidx.compose:compose-bom:2023.08.00')
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
+    
+    // Debug-only dependencies
+    debugImplementation 'androidx.compose.ui:ui-tooling'         // Compose tooling
+    debugImplementation 'androidx.compose.ui:ui-test-manifest'   // Test manifest
+} 

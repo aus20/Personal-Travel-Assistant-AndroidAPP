@@ -1,0 +1,133 @@
+TRAVEL ASSISTANT - DETAILED PROJECT STRUCTURE EXPLANATION
+
+1. ANDROID CLIENT PROJECT (travel-assistant-android)
+==================================================
+
+├── android-client/                 # Android Application
+│   ├── app/
+│   │   ├── src/
+│   │   │   └── main/
+│   │   │       ├── java/com/travelassistant/
+│   │   │       │   ├── data/                    # Data Layer
+│   │   │       │   │   ├── remote/              # Remote Data Source
+│   │   │       │   │   │   ├── api/
+│   │   │       │   │   │   │   ├── FlightApi.kt        # Retrofit API interface
+│   │   │       │   │   │   │   └── AuthApi.kt          # Authentication API
+│   │   │       │   │   │   ├── dto/
+│   │   │       │   │   │   │   ├── request/
+│   │   │       │   │   │   │   │   ├── FlightSearchRequest.kt
+│   │   │       │   │   │   │   │   └── TrackingRequest.kt
+│   │   │       │   │   │   │   └── response/
+│   │   │       │   │   │   │       ├── FlightResponse.kt
+│   │   │       │   │   │   │       └── PriceResponse.kt
+│   │   │       │   │   │   └── service/
+│   │   │       │   │   │       ├── FlightApiService.kt  # API implementation
+│   │   │       │   │   │       └── AuthApiService.kt
+│   │   │       │   │   │
+│   │   │       │   │   └── local/               # Local Data Source
+│   │   │       │   │       ├── dao/
+│   │   │       │   │       │   ├── FlightDao.kt
+│   │   │       │   │       │   ├── UserDao.kt
+│   │   │       │   │       │   └── PriceHistoryDao.kt
+│   │   │       │   │       ├── entity/
+│   │   │       │   │       │   ├── FlightEntity.kt
+│   │   │       │   │       │   ├── UserEntity.kt
+│   │   │       │   │       │   └── PriceHistoryEntity.kt
+│   │   │       │   │       └── AppDatabase.kt    # Room Database
+│   │   │       │   │
+│   │   │       │   ├── domain/                  # Domain Layer
+│   │   │       │   │   ├── model/               # Domain Models
+│   │   │       │   │   │   ├── Flight.kt
+│   │   │       │   │   │   ├── User.kt
+│   │   │       │   │   │   └── PriceAlert.kt
+│   │   │       │   │   ├── repository/          # Repository Interfaces
+│   │   │       │   │   │   ├── FlightRepository.kt
+│   │   │       │   │   │   └── UserRepository.kt
+│   │   │       │   │   └── usecase/             # Use Cases
+│   │   │       │   │       ├── flight/
+│   │   │       │   │       │   ├── SearchFlightsUseCase.kt
+│   │   │       │   │       │   ├── TrackFlightUseCase.kt
+│   │   │       │   │       │   └── GetPriceHistoryUseCase.kt
+│   │   │       │   │       └── user/
+│   │   │       │   │           ├── UpdatePreferencesUseCase.kt
+│   │   │       │   │           └── SaveSearchHistoryUseCase.kt
+│   │   │       │   │
+│   │   │       │   ├── presentation/            # Presentation Layer
+│   │   │       │   │   ├── screens/
+│   │   │       │   │   │   ├── search/
+│   │   │       │   │   │   │   ├── SearchScreen.kt
+│   │   │       │   │   │   │   └── SearchViewModel.kt
+│   │   │       │   │   │   ├── tracking/
+│   │   │       │   │   │   │   ├── TrackingScreen.kt
+│   │   │       │   │   │   │   └── TrackingViewModel.kt
+│   │   │       │   │   │   └── preferences/
+│   │   │       │   │   │       ├── PreferencesScreen.kt
+│   │   │       │   │   │       └── PreferencesViewModel.kt
+│   │   │       │   │   ├── components/
+│   │   │       │   │   │   ├── FlightCard.kt
+│   │   │       │   │   │   ├── SearchBar.kt
+│   │   │       │   │   │   └── PriceChart.kt
+│   │   │       │   │   └── theme/
+│   │   │       │   │       └── Theme.kt
+│   │   │       │   │
+│   │   │       │   ├── di/                      # Dependency Injection
+│   │   │       │   │   ├── AppModule.kt
+│   │   │       │   │   ├── NetworkModule.kt
+│   │   │       │   │   └── DatabaseModule.kt
+│   │   │       │   │
+│   │   │       │   └── worker/                  # Background Workers
+│   │   │       │       ├── FlightTrackingWorker.kt
+│   │   │       │       └── PriceUpdateWorker.kt
+│   │   │       │
+│   │   │       └── res/                         # Resources
+│   │   └── build.gradle
+│   │
+│   └── build.gradle
+│
+└── server/                         # Spring Boot Server
+    ├── src/
+    │   ├── main/
+    │   │   ├── kotlin/com/travelassistant/
+    │   │   │   ├── config/                # Configurations
+    │   │   │   │   ├── SecurityConfig.kt
+    │   │   │   │   ├── DatabaseConfig.kt
+    │   │   │   │   └── SwaggerConfig.kt
+    │   │   │   │
+    │   │   │   ├── controller/            # REST Controllers
+    │   │   │   │   ├── FlightController.kt
+    │   │   │   │   └── UserController.kt
+    │   │   │   │
+    │   │   │   ├── service/               # Service Layer
+    │   │   │   │   ├── FlightService.kt
+    │   │   │   │   ├── UserService.kt
+    │   │   │   │   └── NotificationService.kt
+    │   │   │   │
+    │   │   │   ├── repository/            # Data Access Layer
+    │   │   │   │   ├── FlightRepository.kt
+    │   │   │   │   └── UserRepository.kt
+    │   │   │   │
+    │   │   │   ├── model/                 # Data Models
+    │   │   │   │   ├── entity/            # Database Entities
+    │   │   │   │   │   ├── FlightEntity.kt
+    │   │   │   │   │   └── UserEntity.kt
+    │   │   │   │   └── dto/               # DTOs
+    │   │   │   │       ├── request/
+    │   │   │   │       │   └── FlightSearchRequest.kt
+    │   │   │   │       └── response/
+    │   │   │   │           └── FlightResponse.kt
+    │   │   │   │
+    │   │   │   ├── external/              # External API Integration
+    │   │   │   │   ├── skyscanner/
+    │   │   │   │   │   └── SkyscannerApi.kt
+    │   │   │   │   └── amadeus/
+    │   │   │   │       └── AmadeusApi.kt
+    │   │   │   │
+    │   │   │   └── util/                  # Utilities
+    │   │   │       ├── JwtUtil.kt
+    │   │   │       └── PriceCalculator.kt
+    │   │   │
+    │   │   └── resources/
+    │   │       └── application.yml
+    │   │
+    │   └── test/                          # Test files
+    └── build.gradle
