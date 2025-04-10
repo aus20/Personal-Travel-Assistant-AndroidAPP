@@ -1,0 +1,29 @@
+// Settings file for the Gradle build system
+// This file configures the project structure and repository settings
+
+// Configure how Gradle plugins are resolved
+pluginManagement {
+    // Define repositories for plugin dependencies
+    repositories {
+        google()           // Required for Android Gradle Plugin
+        mavenCentral()    // For general Java/Kotlin plugins
+        gradlePluginPortal() // Default Gradle plugin repository
+    }
+}
+
+// Configure how project dependencies are resolved
+dependencyResolutionManagement {
+    // Enforce repository declarations in the settings file only
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    // Define repositories for project dependencies
+    repositories {
+        google()        // Required for Android dependencies
+        mavenCentral()  // For general Java/Kotlin dependencies
+    }
+}
+
+// Set the name of the root project
+rootProject.name = "Travel Assistant"
+// Include the app module in the build
+// This is the main application module
+include ':app'

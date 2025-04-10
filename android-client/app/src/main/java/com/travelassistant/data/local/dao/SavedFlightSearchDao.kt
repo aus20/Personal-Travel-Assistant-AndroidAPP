@@ -46,9 +46,13 @@ interface SavedFlightSearchDao {
         deleteOrphanedResults()
     }
 
-    @Query("DELETE FROM saved_flight_searches WHERE departureDate < :currentTime")
-    private suspend fun deleteSearchesByTimestamp(currentTime: Long)
+    @Query("DELETE FROM saved_flight_searches WHERE timestamp < :timestamp")
+    suspend fun deleteSearchesByTimestamp(timestamp: Long) {
+        // Implementation will be handled by Room
+    }
 
-    @Query("DELETE FROM cached_flight_results WHERE searchId NOT IN (SELECT id FROM saved_flight_searches)")
-    private suspend fun deleteOrphanedResults()
+    @Query("DELETE FROM flight_search_results WHERE search_id NOT IN (SELECT id FROM saved_flight_searches)")
+    suspend fun deleteOrphanedResults() {
+        // Implementation will be handled by Room
+    }
 } 
