@@ -5,8 +5,7 @@
 plugins {
     id 'com.android.application'  // The core Android application plugin
     id 'org.jetbrains.kotlin.android'  // Plugin for Kotlin support in Android
-    id 'com.google.devtools.ksp'  // Plugin for Kotlin Symbol Processing
-    id 'androidx.room'  // Plugin for Room database
+    id 'kotlin-kapt'
 }
 
 // Main Android configuration block
@@ -35,6 +34,16 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += [
+                    "room.schemaLocation": "$projectDir/schemas",
+                    "room.incremental": "true",
+                    "room.expandProjection": "true"
+                ]
+            }
+        }
     }
 
     // Configure different build variants
@@ -58,43 +67,22 @@ android {
     kotlinOptions {
         // Target JVM version for Kotlin
         jvmTarget = '17'
-        freeCompilerArgs += [
-            "-Xjvm-default=all"
-        ]
-    }
-
-    // Add JVM arguments for kapt
-    kapt {
-        correctErrorTypes true
-        useBuildCache true
-        javacOptions {
-            option("-Xmaxerrs", 500)
-            option("--add-exports", "jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED")
-            option("--add-exports", "jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED")
-            option("--add-exports", "jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED")
-            option("--add-exports", "jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED")
-            option("--add-exports", "jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED")
-            option("--add-exports", "jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED")
-            option("--add-exports", "jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED")
-            option("--add-exports", "jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED")
-        }
     }
 
     // Enable required build features
     buildFeatures {
         // Enable Jetpack Compose for UI
         compose true
-        buildConfig true  // Explicitly enable BuildConfig generation
     }
 
     // Jetpack Compose specific options
     composeOptions {
         // Compose compiler version must match the library version
-        kotlinCompilerExtensionVersion '1.5.4'
+        kotlinCompilerExtensionVersion rootProject.ext.compose_version
     }
 
     // Configure how resources are packaged
-    packagingOptions {
+    packaging {
         resources {
             // Exclude unnecessary legal files
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
@@ -108,32 +96,31 @@ android {
     }
 }
 
-// Room schema export configuration
-room {
-    schemaDirectory "$projectDir/schemas"
-}
-
 // Dependencies required by the app
 dependencies {
-    // Core Android and Kotlin dependencies
+    def room_version = rootProject.ext.room_version
+
+    // Core Android
     implementation 'androidx.core:core-ktx:1.12.0'                 // Kotlin extensions for Android core
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'// Lifecycle components
-    implementation 'androidx.activity:activity-compose:1.7.0'      // Activity support for Compose
-    implementation platform('androidx.compose:compose-bom:2023.08.00')
+    implementation 'androidx.activity:activity-compose:1.8.2'      // Activity support for Compose
 
-    // Jetpack Compose dependencies
+    // Compose
+    implementation platform('androidx.compose:compose-bom:2023.08.00')
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-graphics'
     implementation 'androidx.compose.ui:ui-tooling-preview'
     implementation 'androidx.compose.material3:material3'
-    implementation 'androidx.compose.material:material-icons-core'
-    implementation 'androidx.compose.material:material-icons-extended'
+    
+    // Material Icons - Updated to use the correct package
+    implementation 'androidx.compose.material:material-icons-core:1.5.4'
+    implementation 'androidx.compose.material:material-icons-extended:1.5.4'
 
-    // Room dependencies
-    def room_version = "2.6.1"
+    // Room
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
-    ksp "androidx.room:room-compiler:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    testImplementation "androidx.room:room-testing:$room_version"
 
     // Gson for JSON conversion
     implementation 'com.google.code.gson:gson:2.10.1'

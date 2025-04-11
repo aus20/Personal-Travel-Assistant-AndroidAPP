@@ -14,7 +14,7 @@ pluginManagement {
 // Configure how project dependencies are resolved
 dependencyResolutionManagement {
     // Enforce repository declarations in the settings file only
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     // Define repositories for project dependencies
     repositories {
         google()        // Required for Android dependencies
