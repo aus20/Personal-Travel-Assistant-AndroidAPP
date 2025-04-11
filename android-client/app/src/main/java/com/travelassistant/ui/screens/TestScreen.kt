@@ -11,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 // UI modifiers and utilities
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 // Custom components from our app
 import com.travelassistant.ui.components.*
@@ -88,4 +89,10 @@ fun TestScreen() {
             }
         }
     }
-} 
+}
+
+@Preview(showBackground = true, name = "TestScreen Preview")
+@Composable
+fun TestScreenPreview() {
+    TestScreen()
+}

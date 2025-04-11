@@ -9,9 +9,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 // Material Icons for flight-related icons
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Flight
-import androidx.compose.material.icons.filled.FlightLand
-import androidx.compose.material.icons.filled.FlightTakeoff
+import androidx.compose.material.icons.rounded.Flight
+import androidx.compose.material.icons.rounded.FlightLand
+import androidx.compose.material.icons.rounded.FlightTakeoff
 // Material Design 3 components and theming
 import androidx.compose.material3.*
 // Core Compose annotations and components
@@ -78,7 +78,7 @@ fun FlightCard(
                 // Departure
                 Column {
                     Icon(
-                        imageVector = Icons.Default.FlightTakeoff,
+                        imageVector = Icons.Rounded.FlightTakeoff,
                         contentDescription = "Departure",
                         tint = MaterialTheme.colorScheme.primary
                     )
@@ -94,7 +94,7 @@ fun FlightCard(
 
                 // Flight Icon
                 Icon(
-                    imageVector = Icons.Default.Flight,
+                    imageVector = Icons.Rounded.Flight,
                     contentDescription = "Flight",
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(horizontal = 16.dp)
@@ -103,7 +103,7 @@ fun FlightCard(
                 // Arrival
                 Column {
                     Icon(
-                        imageVector = Icons.Default.FlightLand,
+                        imageVector = Icons.Rounded.FlightLand,
                         contentDescription = "Arrival",
                         tint = MaterialTheme.colorScheme.primary
                     )
@@ -149,14 +149,15 @@ fun FlightCardPreview() {
         Surface {
             FlightCard(
                 flight = FlightInfo(
-                    airline = "British Airways",
-                    flightNumber = "BA123",
-                    departureTime = "10:00 AM",
-                    departureAirport = "JFK - New York",
-                    arrivalTime = "10:00 PM",
-                    arrivalAirport = "LHR - London",
-                    price = 599.99
-                )
+                    airline = "Turkish Airlines",
+                    flightNumber = "TK123",
+                    departureTime = "10:30 AM",
+                    departureAirport = "IST",
+                    arrivalTime = "12:45 PM",
+                    arrivalAirport = "LHR",
+                    price = 450.0
+                ),
+                modifier = Modifier.padding(16.dp)
             )
         }
     }

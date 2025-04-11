@@ -26,6 +26,7 @@ local.properties
 *.iml
 .idea/
 .idea_modules/
+.vscode/
 
 # Keystore files
 *.jks
@@ -70,4 +71,7 @@ lint/outputs/
 lint/tmp/
 
 # Android Profiling
-*.hprof 
+*.hprof
+
+# Sensitive files
+token.txt 
