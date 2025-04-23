@@ -21,7 +21,7 @@ interface AppPreferencesDao {
     suspend fun getPreferencesByUserId(userId: String): AppPreferencesEntity?
 
     @Query("SELECT * FROM app_preferences WHERE userId = :userId")
-    fun getPreferencesByUserIdFlow(userId: String): Flow<AppPreferencesEntity?>
+    fun getPreferencesByUserIdFlow(userId: String): Flow<List<AppPreferencesEntity?>>
 
     // Notification Settings
     @Query("""

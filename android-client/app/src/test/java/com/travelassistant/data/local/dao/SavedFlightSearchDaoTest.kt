@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import android.app.Application
 import com.travelassistant.data.local.AppDatabase
 import com.travelassistant.data.local.entity.SavedFlightSearchEntity
 import kotlinx.coroutines.flow.first
@@ -12,19 +13,19 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 import java.util.*
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
+import org.junit.Assert.*
 
-@RunWith(AndroidJUnit4::class)
+
+@RunWith(JUnit4::class)
 class SavedFlightSearchDaoTest {
     private lateinit var database: AppDatabase
     private lateinit var dao: SavedFlightSearchDao
 
     @Before
     fun setup() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
+        val context = Application()
         database = Room.inMemoryDatabaseBuilder(
             context,
             AppDatabase::class.java
@@ -48,7 +49,7 @@ class SavedFlightSearchDaoTest {
 
         // Then
         assertNotNull(retrieved)
-        assertEquals(search.id, retrieved.id)
+        assertEquals(search.id, retrieved!!.id)
         assertEquals(search.origin, retrieved.origin)
         assertEquals(search.destination, retrieved.destination)
         assertEquals(search.maxPrice, retrieved.maxPrice)
@@ -68,7 +69,7 @@ class SavedFlightSearchDaoTest {
 
         // Then
         assertNotNull(retrieved)
-        assertEquals(2000.0, retrieved.maxPrice)
+        assertEquals(2000.0, retrieved!!.maxPrice)
     }
 
     @Test
