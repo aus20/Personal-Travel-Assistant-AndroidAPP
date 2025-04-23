@@ -16,5 +16,7 @@ data class AppPreferencesEntity(
     val notificationEnabled: Boolean,
     val priceAlertThreshold: Double,
     val preferredCurrency: String,
-    val lastSyncTimestamp: Long
+    val lastSyncTimestamp: Long,
+    val updatedAt: Long? = null,
+    val language: String
 ) 

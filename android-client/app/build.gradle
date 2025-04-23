@@ -6,6 +6,7 @@ plugins {
     id 'com.android.application'  // The core Android application plugin
     id 'org.jetbrains.kotlin.android'  // Plugin for Kotlin support in Android
     id 'kotlin-kapt'
+    id 'com.google.dagger.hilt.android' version '2.48' apply true
 }
 
 // Main Android configuration block
@@ -98,6 +99,8 @@ android {
 
 // Dependencies required by the app
 dependencies {
+    implementation 'androidx.test:core-ktx:1.6.1'
+    implementation 'androidx.test.ext:junit-ktx:1.2.1'
     def room_version = rootProject.ext.room_version
 
     // Core Android
@@ -135,4 +138,12 @@ dependencies {
     // Debug-only dependencies
     debugImplementation 'androidx.compose.ui:ui-tooling'         // Compose tooling
     debugImplementation 'androidx.compose.ui:ui-test-manifest'   // Test manifest
+
+    // WorkManager
+    implementation 'androidx.work:work-runtime-ktx:2.9.0'
+
+    // Hilt (for @Inject, @Singleton, etc.)
+    implementation 'com.google.dagger:hilt-android:2.48'
+    kapt 'com.google.dagger:hilt-compiler:2.48'
+
 } 
