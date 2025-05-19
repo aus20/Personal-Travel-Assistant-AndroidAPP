@@ -7,7 +7,7 @@ import androidx.activity.ComponentActivity
 // Compose integration with Activity
 import androidx.activity.compose.setContent
 // Our test screen component
-import com.travelassistant.ui.screens.TestScreen
+import com.travelassistant.ui.screens.MainScreen
 // App theme
 import com.travelassistant.ui.theme.TravelAssistantTheme
 
@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
             // Apply our custom theme to the entire app
             TravelAssistantTheme {
                 // Display the test screen with all our components
-                TestScreen()
+                MainScreen()
             }
         }
     }

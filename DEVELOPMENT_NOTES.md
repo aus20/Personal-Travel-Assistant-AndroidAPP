@@ -20,18 +20,18 @@
 
 #### Active Tasks
 1. Room Database Implementation
-   - [ ] Room Database Setup
-     - [ ] Entity creation
-     - [ ] DAO interfaces
-     - [ ] Database migrations
-     - [ ] Sync mechanism with PostgreSQL
+   - [x] Room Database Setup
+     - [x] Entity creation
+     - [x] DAO interfaces
+     - [x] Database migrations
+     - [x] Sync mechanism with PostgreSQL
    - [x] PostgreSQL Setup (Completed)
      - [x] Table creation
      - [x] Entity mappings
      - [x] Repository implementations
 
 2. Static UI Development
-   - [ ] Material Design theme setup
+   - [x] Material Design theme setup
    - [ ] Basic UI components
    - [ ] Screen layouts
 
