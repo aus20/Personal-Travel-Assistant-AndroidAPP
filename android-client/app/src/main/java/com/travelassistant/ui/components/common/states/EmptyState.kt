@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun EmptyState(
-    icon: @Composable () -> Unit,
+    icon: () -> Unit,
     title: String,
     description: String,
     modifier: Modifier = Modifier

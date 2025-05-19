@@ -1,9 +1,7 @@
 package com.travelassistant.ui.screens.saved
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,28 +9,24 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.travelassistant.ui.components.common.cards.FlightCard
 import com.travelassistant.ui.components.common.states.EmptyState
 
-// Sample data for preview
-private val sampleSearches = listOf(
-    Triple("New York", "London", "Mar 15 - Mar 19, 2024"),
-    Triple("Tokyo", "Paris", "Apr 20 - Apr 30, 2024"),
-    Triple("Sydney", "Dubai", "May 10 - May 25, 2024")
+data class SavedSearch(
+    val from: String,
+    val to: String,
+    val date: String
 )
 
 @Composable
-fun SavedSearchesScreen() {
-    var savedSearches by remember { mutableStateOf(sampleSearches) }
-    
+fun SavedSearchesScreen(
+    savedSearches: List<SavedSearch>,
+    onDeleteSearch: (SavedSearch) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Scaffold { paddingValues ->
         Column(
             modifier = Modifier 
@@ -54,15 +48,13 @@ fun SavedSearchesScreen() {
                 )
             } else {
                 LazyColumn {
-                    items(savedSearches) { (from, to, date) ->
+                    items(savedSearches) { search ->
                         FlightCard(
-                            fromCity = from,
-                            toCity = to,
-                            date = date,
+                            fromCity = search.from,
+                            toCity = search.to,
+                            date = search.date,
                             price = "400$",
-                            onDelete = {
-                                savedSearches = savedSearches.filter { it != Triple(from, to, date) }
-                            }
+                            onDelete = { onDeleteSearch(search) }
                         )
                     }
                 }
@@ -74,5 +66,12 @@ fun SavedSearchesScreen() {
 @Preview(showBackground = true)
 @Composable
 fun SavedSearchesScreenPreview() {
-    SavedSearchesScreen()
+    SavedSearchesScreen(
+        savedSearches = listOf(
+            SavedSearch("New York", "London", "Mar 15 - Mar 19, 2024"),
+            SavedSearch("Tokyo", "Paris", "Apr 20 - Apr 30, 2024"),
+            SavedSearch("Sydney", "Dubai", "May 10 - May 25, 2024")
+        ),
+        onDeleteSearch = {}
+    )
 } 

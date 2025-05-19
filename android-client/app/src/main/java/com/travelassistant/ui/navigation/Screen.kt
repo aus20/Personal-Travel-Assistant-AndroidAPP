@@ -10,6 +10,11 @@ sealed class Screen(val route: String) {
             return "search_results/$fromCity/$toCity/$departureDate/${returnDate ?: ""}"
         }
     }
+    object FlightDetails : Screen("flight_details/{flightId}") {
+        fun createRoute(flightId: String): String {
+            return "flight_details/$flightId"
+        }
+    }
     object SavedSearches : Screen("saved_searches")
     object Notifications : Screen("notifications")
     object Profile : Screen("profile")
@@ -18,6 +23,7 @@ sealed class Screen(val route: String) {
         fun fromRoute(route: String?): Screen {
             return when {
                 route?.startsWith("search_results/") == true -> SearchResults
+                route?.startsWith("flight_details/") == true -> FlightDetails
                 route == Search.route -> Search
                 route == SavedSearches.route -> SavedSearches
                 route == Notifications.route -> Notifications

@@ -17,10 +17,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -32,15 +28,19 @@ import java.util.Date
 
 @Composable
 fun SearchScreen(
-    onSearchResults: (String, String, Date, Date?) -> Unit,
+    fromLocation: String,
+    toLocation: String,
+    departureDate: Date?,
+    returnDate: Date?,
+    passengerCount: Int,
+    onFromLocationChange: (String) -> Unit,
+    onToLocationChange: (String) -> Unit,
+    onDepartureDateChange: (Date?) -> Unit,
+    onReturnDateChange: (Date?) -> Unit,
+    onPassengerCountChange: (Int) -> Unit,
+    onSearchClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var fromLocation by remember { mutableStateOf("") }
-    var toLocation by remember { mutableStateOf("") }
-    var departureDate by remember { mutableStateOf<Date?>(null) }
-    var returnDate by remember { mutableStateOf<Date?>(null) }
-    var passengerCount by remember { mutableStateOf(1) }
-    
     Scaffold { paddingValues ->
         Column(
             modifier = Modifier
@@ -70,56 +70,37 @@ fun SearchScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Default.FlightTakeoff,
-                        contentDescription = null,
-                        modifier = Modifier.padding(bottom = 8.dp),
-                        tint = MaterialTheme.colorScheme.primary
+                        contentDescription = "Flight Search",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(bottom = 8.dp)
                     )
-                    
                     Text(
-                        text = "Find Your Flight",
-                        style = MaterialTheme.typography.headlineMedium,
+                        text = "Find Your Perfect Flight",
+                        style = MaterialTheme.typography.headlineSmall,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        textAlign = TextAlign.Center
-                    )
-                    
-                    Spacer(modifier = Modifier.height(8.dp))
-                    
-                    Text(
-                        text = "Search for flights and track prices",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
                         textAlign = TextAlign.Center
                     )
                 }
             }
             
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            // Search Form
             FlightSearchForm(
                 fromLocation = fromLocation,
-                onFromLocationChange = { fromLocation = it },
                 toLocation = toLocation,
-                onToLocationChange = { toLocation = it },
                 departureDate = departureDate,
-                onDepartureDateSelected = { departureDate = it },
                 returnDate = returnDate,
-                onReturnDateSelected = { returnDate = it },
                 passengerCount = passengerCount,
-                onPassengerCountChange = { passengerCount = it }
+                onFromLocationChange = onFromLocationChange,
+                onToLocationChange = onToLocationChange,
+                onDepartureDateSelected = onDepartureDateChange,
+                onReturnDateSelected = onReturnDateChange,
+                onPassengerCountChange = onPassengerCountChange
             )
             
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             
-            // Search Button
             PrimaryButton(
                 text = "Search Flights",
-                onClick = { 
-                    // Navigate to search results screen
-                    departureDate?.let { date ->
-                        onSearchResults(fromLocation, toLocation, date, returnDate)
-                    }
-                },
+                onClick = onSearchClick,
                 enabled = fromLocation.isNotBlank() && toLocation.isNotBlank() && departureDate != null
             )
             
@@ -132,6 +113,16 @@ fun SearchScreen(
 @Composable
 fun SearchScreenPreview() {
     SearchScreen(
-        onSearchResults = { _, _, _, _ -> }
+        fromLocation = "",
+        toLocation = "",
+        departureDate = null,
+        returnDate = null,
+        passengerCount = 1,
+        onFromLocationChange = {},
+        onToLocationChange = {},
+        onDepartureDateChange = {},
+        onReturnDateChange = {},
+        onPassengerCountChange = {},
+        onSearchClick = {}
     )
 }

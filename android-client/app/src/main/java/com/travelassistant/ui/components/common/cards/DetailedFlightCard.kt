@@ -11,23 +11,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.travelassistant.data.model.FlightResult
 import java.text.SimpleDateFormat
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailedFlightCard(
-    airline: String,
-    airlineLogo: String,
-    flightNumber: String,
-    departureAirport: String,
-    arrivalAirport: String,
-    departureTime: Date,
-    arrivalTime: Date,
-    duration: String,
-    stops: Int,
-    price: Double,
-    currency: String = "USD",
+    flight: FlightResult,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -56,11 +47,11 @@ fun DetailedFlightCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = airline,
+                    text = flight.airline,
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    text = flightNumber,
+                    text = flight.flightNumber,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -88,16 +79,16 @@ fun DetailedFlightCard(
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = departureAirport,
+                            text = flight.departureAirport,
                             style = MaterialTheme.typography.titleMedium
                         )
                     }
                     Text(
-                        text = timeFormat.format(departureTime),
+                        text = timeFormat.format(flight.departureTime),
                         style = MaterialTheme.typography.bodyLarge
                     )
                     Text(
-                        text = dateFormat.format(departureTime),
+                        text = dateFormat.format(flight.departureTime),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -119,7 +110,7 @@ fun DetailedFlightCard(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = arrivalAirport,
+                            text = flight.arrivalAirport,
                             style = MaterialTheme.typography.titleMedium
                         )
                         Spacer(modifier = Modifier.width(4.dp))
@@ -130,11 +121,11 @@ fun DetailedFlightCard(
                         )
                     }
                     Text(
-                        text = timeFormat.format(arrivalTime),
+                        text = timeFormat.format(flight.arrivalTime),
                         style = MaterialTheme.typography.bodyLarge
                     )
                     Text(
-                        text = dateFormat.format(arrivalTime),
+                        text = dateFormat.format(flight.arrivalTime),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -156,7 +147,7 @@ fun DetailedFlightCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = duration,
+                        text = flight.duration,
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
@@ -169,9 +160,9 @@ fun DetailedFlightCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = when (stops) {
+                        text = when (flight.stops) {
                             0 -> "Direct"
-                            else -> "$stops ${if (stops == 1) "stop" else "stops"}"
+                            else -> "${flight.stops} ${if (flight.stops == 1) "stop" else "stops"}"
                         },
                         style = MaterialTheme.typography.bodyMedium
                     )
@@ -187,7 +178,7 @@ fun DetailedFlightCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "$currency ${String.format("%.2f", price)}",
+                        text = "${flight.currency} ${String.format("%.2f", flight.price)}",
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary
                     )

@@ -239,16 +239,16 @@ fun FlightDetailsScreenPreview() {
         FlightDetailsScreen(
             flight = FlightResult(
                 id = "1",
-                airline = "Delta Airlines",
+                airline = "Turkish Airlines",
                 airlineLogo = "delta_logo",
-                flightNumber = "DL123",
-                departureAirport = "JFK",
-                arrivalAirport = "LAX",
+                flightNumber = "TA5378",
+                departureAirport = "IST",
+                arrivalAirport = "CDG",
                 departureTime = Date(),
-                arrivalTime = Date(System.currentTimeMillis() + 5 * 60 * 60 * 1000),
-                duration = "5h 30m",
+                arrivalTime = Date(System.currentTimeMillis() + 2 * 60 * 60 * 1000),
+                duration = "3h",
                 stops = 0,
-                price = 299.99,
+                price = 189.99,
                 currency = "USD"
             ),
             onBackClick = {}

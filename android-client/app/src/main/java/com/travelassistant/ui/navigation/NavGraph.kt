@@ -12,6 +12,8 @@ import com.travelassistant.ui.screens.search.SearchResultsScreen
 import com.travelassistant.ui.screens.saved.SavedSearchesScreen
 import com.travelassistant.ui.screens.notifications.NotificationsScreen
 import com.travelassistant.ui.screens.profile.ProfileScreen
+import com.travelassistant.ui.screens.flight.FlightDetailsScreen
+import com.travelassistant.data.model.FlightResult
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -82,6 +84,39 @@ fun NavGraph(
                 toCity = toCity,
                 departureDate = departureDate,
                 returnDate = returnDate,
+                onBackClick = { navController.popBackStack() },
+                onFlightClick = { flight ->
+                    navController.navigate(Screen.FlightDetails.createRoute(flight.id))
+                }
+            )
+        }
+
+        composable(
+            route = Screen.FlightDetails.route,
+            arguments = listOf(
+                navArgument("flightId") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val flightId = backStackEntry.arguments?.getString("flightId") ?: ""
+            // TODO: Fetch flight details using flightId
+            // For now, we'll use a dummy flight
+            val dummyFlight = FlightResult(
+                id = flightId,
+                airline = "Delta Airlines",
+                airlineLogo = "delta_logo",
+                flightNumber = "DL123",
+                departureAirport = "JFK",
+                arrivalAirport = "LAX",
+                departureTime = Date(),
+                arrivalTime = Date(System.currentTimeMillis() + 5 * 60 * 60 * 1000),
+                duration = "5h 30m",
+                stops = 0,
+                price = 299.99,
+                currency = "USD"
+            )
+            
+            FlightDetailsScreen(
+                flight = dummyFlight,
                 onBackClick = { navController.popBackStack() }
             )
         }
