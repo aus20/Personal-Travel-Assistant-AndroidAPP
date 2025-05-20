@@ -29,7 +29,8 @@
 
         <!-- Firebase -->
         <service
-            android:name="com.travelassistant.data.sync.MyFirebaseMessagingService" android:exported="false">
+            android:name="com.travelassistant.data.services.fcm.MyFirebaseMessagingService" 
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
