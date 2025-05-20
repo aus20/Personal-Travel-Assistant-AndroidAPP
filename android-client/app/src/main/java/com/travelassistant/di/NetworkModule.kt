@@ -14,8 +14,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-import com.travelassistant.data.repository.UserRepository
-import com.travelassistant.data.repository.impl.UserRepositoryImpl
+import com.travelassistant.data.repository.AuthRepository
+import com.travelassistant.data.repository.impl.AuthRepositoryImpl
 
 // Bu modül, Retrofit ve OkHttpClient gibi ağ bileşenlerini sağlamak için kullanılır.
 // Server ile iletişim kurmak için gerekli olan bileşenleri oluşturur.
@@ -80,7 +80,7 @@ object NetworkModule {
     // }
     @Provides
     @Singleton
-    fun provideUserRepository(authApiService: AuthApiService): UserRepository {
-        return UserRepositoryImpl(authApiService)
+    fun provideUserRepository(authApiService: AuthApiService): AuthRepository {
+        return AuthRepositoryImpl(authApiService)
     }
 }
