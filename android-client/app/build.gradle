@@ -7,6 +7,9 @@ plugins {
     id 'org.jetbrains.kotlin.android'  // Plugin for Kotlin support in Android
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android' version '2.48' apply true
+    // Firebase bağlantısı için yazıldı.
+    // app level build.gradle dosyasında yazılır.
+    id 'com.google.gms.google-services'  
 }
 
 // Main Android configuration block
@@ -149,4 +152,9 @@ dependencies {
     // Hilt (for @Inject, @Singleton, etc.)
     implementation 'com.google.dagger:hilt-android:2.48'
     kapt 'com.google.dagger:hilt-compiler:2.48'
+
+    // Firebase
+    implementation platform('com.google.firebase:firebase-bom:33.13.0')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-messaging-ktx'
 } 
