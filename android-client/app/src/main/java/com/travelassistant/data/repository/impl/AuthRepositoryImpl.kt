@@ -4,14 +4,17 @@ import com.travelassistant.data.remote.api.AuthApiService
 import com.travelassistant.data.remote.dto.request.UserRegisterRequest
 import com.travelassistant.data.remote.dto.response.UserResponse
 import com.travelassistant.data.repository.AuthRepository
-import com.travelassistant.data.remote.dto.UserLoginRequest   // <<-- YENİ IMPORT
-import com.travelassistant.data.remote.dto.JwtLoginResponse // <<-- YENİ IMPORT
+import com.travelassistant.data.remote.dto.request.UserLoginRequest
+import com.travelassistant.data.remote.dto.request.FcmTokenRequest // <<-- YENİ IMPORT
+import com.travelassistant.data.remote.dto.response.JwtLoginResponse // <<-- YENİ IMPORT
 import com.travelassistant.util.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
+import android.util.Log
+
 
 // AuthRepositoryImpl sınıfı, AuthRepository arayüzünü uygular
 // Bu sınıf, kullanıcı kaydı gibi işlemleri gerçekleştirmek için gerekli olan API çağrılarını yapar
@@ -57,6 +60,36 @@ class AuthRepositoryImpl @Inject constructor(
             Result.Error("Network error: Please check your internet connection.", e)
         } catch (e: Exception) {
             Result.Error("Unexpected error occurred: ${e.localizedMessage ?: "Unknown error"}", e)
+        }
+    }
+    override suspend fun updateFcmToken(authToken: String, fcmTokenRequest: FcmTokenRequest): Result<Unit> {
+        return withContext(Dispatchers.IO) { // Arka plan thread'inde çalıştır
+            // BEARER KISIMLARI DEĞİŞEBİLİR
+            try {
+                val bearerAuthToken = if (authToken.startsWith("Bearer ")) authToken else "Bearer $authToken"
+                Log.d("AuthRepositoryImpl", "Updating FCM token with auth: $bearerAuthToken") // Loglama
+
+                // AuthApiService içindeki metod adının updateUserFcmToken olduğunu varsayıyoruz
+                val response = authApiService.updateFcmToken(bearerAuthToken, fcmTokenRequest)
+
+                if (response.isSuccessful) {
+                    Log.i("AuthRepositoryImpl", "FCM token successfully updated on server.")
+                    Result.Success(Unit)
+                } else {
+                    val errorMsg = response.errorBody()?.string() ?: "FCM token update unsuccessful. (HTTP ${response.code()})"
+                    Log.e("AuthRepositoryImpl", "FCM token update failed: $errorMsg")
+                    Result.Error(errorMsg)
+                }
+            } catch (e: HttpException) {
+                Result.Error("HTTP error : ${e.code()} - ${e.message()}", e)
+            } catch (e: IOException) {
+                Result.Error(
+                    "Network connection cannot be established.Please check you internet connection",
+                    e
+                )
+            } catch (e: Exception) {
+                Result.Error("Unknown error: ${e.localizedMessage ?: "Unknown error"}", e)
+            }
         }
     }
 }

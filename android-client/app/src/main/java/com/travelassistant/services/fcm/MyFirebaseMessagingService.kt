@@ -14,7 +14,9 @@ import com.google.firebase.messaging.RemoteMessage
 import com.travelassistant.MainActivity // Ana aktiviteniz
 import com.travelassistant.R // Kaynaklar için R sınıfı
 import com.travelassistant.data.repository.NotificationRepository // Bildirimleri kaydetmek için (opsiyonel)
-import com.travelassistant.data.repository.UserRepository // Token'ı sunucuya göndermek için (oluşturulacak)
+import com.travelassistant.data.repository.AuthRepository // Token'ı sunucuya göndermek için (oluşturulacak)
+import com.travelassistant.data.remote.dto.request.FcmTokenRequest
+import com.travelassistant.util.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,10 +28,7 @@ import javax.inject.Inject
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     @Inject
-    lateinit var userRepository: UserRepository // Hilt ile enjekte edilecek
-
-    @Inject
-    lateinit var notificationRepository: NotificationRepository // Hilt ile enjekte edilecek (opsiyonel)
+    lateinit var authRepository: AuthRepository // Hilt ile enjekte edilecek
 
     private val TAG = "MyFirebaseMsgService"
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
@@ -46,23 +45,42 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     /**
      * Yeni FCM token'ını sunucuya gönderir.
      */
-    private fun sendRegistrationToServer(token: String?) {
-        token?.let {
+    private fun sendRegistrationToServer(newFcmToken: String?) {
+        newFcmToken?.let { fcmToken ->
             coroutineScope.launch {
-                try {
-                    // userRepository üzerinden token'ı sunucuya gönderme işlemi
-                    // Bu metodun UserRepository içinde oluşturulması gerekecek.
-                    // Örneğin: userRepository.updateFcmTokenOnServer(it)
-                    Log.i(TAG, "FCM Token sunucuya gönderiliyor: $it")
-                    // TODO: UserRepository ve ilgili network çağrısını implemente et
-                    // Şimdilik sadece logluyoruz. Gerçek implementasyon için
-                    // bir sonraki adımlarda UserRepository ve ApiService oluşturacağız.
-                    // userRepository.sendFcmToken(it)
-                } catch (e: Exception) {
-                    Log.e(TAG, "sendRegistrationToServer failed", e)
+                val jwtAuthToken = retrieveCurrentAuthToken() // Bu metodu implemente etmeliyiz
+
+                if (jwtAuthToken.isNullOrBlank()) {
+                    Log.w(TAG, "Kullanıcı giriş yapmamış veya JWT token bulunamadı. FCM token gönderilemiyor.")
+                    return@launch
+                }
+
+                // FcmTokenRequest objesini burada oluşturuyoruz
+                val requestDto = FcmTokenRequest(token = fcmToken)
+
+                // AuthRepository (veya UserRepository) üzerinden token güncelleme
+                when (val result = authRepository.updateFcmToken(jwtAuthToken, requestDto)) {
+                    is Result.Success -> {
+                        Log.i(TAG, "FCM Token sunucuya başarıyla gönderildi/güncellendi.")
+                    }
+                    is Result.Error -> {
+                        Log.e(TAG, "FCM Token sunucuya gönderilirken hata oluştu: ${result.message}")
+                        // Gerekirse tekrar deneme mekanizması (WorkManager vb.)
+                    }
+                    else -> { /* Result.Loading durumu ele alınabilir */ }
                 }
             }
         }
+    }
+    // Placeholder: Gerçek JWT token'ı alma mantığı buraya gelmeli
+    private suspend fun retrieveCurrentAuthToken(): String? {
+        // TODO: Bu metod, giriş yapmış kullanıcının JWT token'ını güvenli bir yerden
+        // (örn: şifreli SharedPreferences, DataStore, AuthManager) okumalıdır.
+        // Kullanıcı Girişi (Login) use case'i tamamlandığında burası doldurulacak.
+        Log.w(TAG, "retrieveCurrentAuthToken() - Placeholder: Gerçek JWT token alma implementasyonu gerekli.")
+        // ŞİMDİLİK TEST İÇİN ELLE BİR TOKEN GİREBİLİR YA DA NULL DÖNDÜREBİLİRİZ.
+        // return "YOUR_VALID_JWT_TOKEN_FOR_TESTING" // Test için
+        return null
     }
 
     /**
