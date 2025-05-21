@@ -16,6 +16,9 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import com.travelassistant.data.repository.AuthRepository
 import com.travelassistant.data.repository.impl.AuthRepositoryImpl
+import dagger.hilt.android.qualifiers.ApplicationContext
+import com.travelassistant.data.session.SessionManager
+import android.content.Context
 
 // Bu modül, Retrofit ve OkHttpClient gibi ağ bileşenlerini sağlamak için kullanılır.
 // Server ile iletişim kurmak için gerekli olan bileşenleri oluşturur.
@@ -80,7 +83,15 @@ object NetworkModule {
     // }
     @Provides
     @Singleton
-    fun provideUserRepository(authApiService: AuthApiService): AuthRepository {
-        return AuthRepositoryImpl(authApiService)
+    fun provideUserRepository(authApiService: AuthApiService,sessionManager: SessionManager): AuthRepository {
+        return AuthRepositoryImpl(authApiService,sessionManager)
+    }
+    @Provides
+    @Singleton
+    fun provideSessionManager(
+        @ApplicationContext context: Context,
+        gson: Gson // provideGson() metodundan gelecek
+    ): SessionManager {
+        return SessionManager(context, gson)
     }
 }

@@ -7,6 +7,7 @@ import com.travelassistant.data.repository.AuthRepository
 import com.travelassistant.data.remote.dto.request.UserLoginRequest
 import com.travelassistant.data.remote.dto.request.FcmTokenRequest // <<-- YENİ IMPORT
 import com.travelassistant.data.remote.dto.response.JwtLoginResponse // <<-- YENİ IMPORT
+import com.travelassistant.data.session.SessionManager
 import com.travelassistant.util.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,8 +20,11 @@ import android.util.Log
 // AuthRepositoryImpl sınıfı, AuthRepository arayüzünü uygular
 // Bu sınıf, kullanıcı kaydı gibi işlemleri gerçekleştirmek için gerekli olan API çağrılarını yapar
 class AuthRepositoryImpl @Inject constructor(
-    private val authApiService: AuthApiService
+    private val authApiService: AuthApiService,
+    private val sessionManager: SessionManager
 ) : AuthRepository {
+
+    private val tag = "AuthRepositoryImpl"
 
     override suspend fun registerUser(userRegisterRequest: UserRegisterRequest): Result<UserResponse> {
         return withContext(Dispatchers.IO) { // Network çağrıları IO thread'inde yapılmalı
@@ -47,9 +51,12 @@ class AuthRepositoryImpl @Inject constructor(
         return try {
             val response = authApiService.loginUser(userLoginRequest)
             if (response.isSuccessful && response.body() != null) {
-                // Başarılı giriş, JWT token'ı ve kullanıcı bilgileri geldi.
-                // JWT token'ını burada saklama işlemi yapılabilir veya UseCase/ViewModel'e bırakılabilir.
-                Result.Success(response.body()!!)
+                val jwtResponse = response.body()!!
+                // BAŞARILI GİRİŞ SONRASI TOKEN VE KULLANICI BİLGİLERİNİ KAYDET
+                sessionManager.saveAuthToken(jwtResponse.token)
+                sessionManager.saveUserDetails(jwtResponse.user)
+                Log.d(tag, "Giriş başarılı. Token ve kullanıcı bilgileri kaydedildi.")
+                Result.Success(jwtResponse)
             } else {
                 val errorMsg = response.errorBody()?.string() ?: "Login failed (HTTP ${response.code()})"
                 Result.Error(errorMsg)
