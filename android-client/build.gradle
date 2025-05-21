@@ -7,7 +7,7 @@ buildscript {
     // These versions will be used by all modules in the project
     ext {
         // Version of the Android Gradle plugin
-        agp_version = '8.9.2'
+        agp_version = '8.10.0'
         // Version of the Kotlin Gradle plugin
         kotlin_version = '1.9.20'
         // Version of the Compose library
@@ -27,6 +27,8 @@ buildscript {
         classpath "com.android.tools.build:gradle:$agp_version"
         // Kotlin Gradle Plugin - enables Kotlin support in the project
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        classpath 'com.google.gms:google-services:4.3.15' // Veya daha güncel bir versiyon
     }
 
     repositories {
@@ -37,8 +39,8 @@ buildscript {
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    id 'com.android.application' version '8.9.2' apply false
-    id 'com.android.library' version '8.9.2' apply false
+    id 'com.android.application' version '8.10.0' apply false
+    id 'com.android.library' version '8.10.0' apply false
     id 'org.jetbrains.kotlin.android' version '1.9.20' apply false
     id 'com.google.devtools.ksp' version '1.9.20-1.0.14' apply false
     id 'com.google.gms.google-services' version '4.4.2' apply false

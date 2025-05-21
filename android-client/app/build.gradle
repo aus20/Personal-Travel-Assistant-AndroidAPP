@@ -157,4 +157,11 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:33.13.0')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-messaging-ktx'
+
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:3.0.0" // En güncel stabil versiyonu kontrol et
+    implementation "com.squareup.retrofit2:converter-gson:3.0.0" // JSON işlemleri için Gson converter'ı
+    // OkHttp (Retrofit tarafından kullanılır, loglama için de faydalı)
+    implementation "com.squareup.okhttp3:okhttp:4.12.0" // En güncel stabil versiyonu kontrol et
+    implementation "com.squareup.okhttp3:logging-interceptor:4.12.0" // Network logları için (NetworkModule'de kullanmıştık)
 } 
