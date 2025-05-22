@@ -1,6 +1,5 @@
 package com.travelassistant.ui.viewmodel.saved
 
-import com.travelassistant.data.model.FlightResult
 import java.util.Date
 
 data class SavedSearch(
@@ -10,7 +9,7 @@ data class SavedSearch(
     val departureDate: Date,
     val returnDate: Date?,
     val passengerCount: Int,
-    val lastSearchResults: List<FlightResult>?,
+    val lastSearchResults: List<Unit>?,
     val createdAt: Date,
     val isActive: Boolean
 )
