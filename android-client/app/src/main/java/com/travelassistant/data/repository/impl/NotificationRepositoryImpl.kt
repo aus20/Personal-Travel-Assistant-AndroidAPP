@@ -3,16 +3,20 @@ package com.travelassistant.data.repository.impl
 import com.travelassistant.data.local.dao.LocalNotificationDao
 import com.travelassistant.data.local.entity.LocalNotificationEntity
 import com.travelassistant.data.repository.NotificationRepository
+import com.travelassistant.data.network.NetworkStateManager
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Implementation of the NotificationRepository interface.
  * This class handles both local storage and remote synchronization of notifications.
  */
-class NotificationRepositoryImpl(
+@Singleton
+class NotificationRepositoryImpl @Inject constructor(
     private val localNotificationDao: LocalNotificationDao,
-    private val isOnline: Boolean = true
+    private val networkStateManager: NetworkStateManager
 ) : NotificationRepository {
 
     override suspend fun insertNotification(notification: LocalNotificationEntity): String {
@@ -84,19 +88,10 @@ class NotificationRepositoryImpl(
     }
 
     override suspend fun syncWithRemote(): Int {
-        // This is a placeholder for the actual sync implementation
-        // In a real implementation, this would:
-        // 1. Get notifications that need to be synced
-        // 2. Send them to the remote server
-        // 3. Get updates from the remote server
-        // 4. Update the local database
-        // 5. Return the number of synchronized items
-        
-        if (!isOnline) {
+        if (!networkStateManager.isOnline.value) { // Use networkStateManager
             return 0
         }
-        
-        // For now, just return a dummy value
+        // ... rest of sync logic ...
         return 0
     }
 } 

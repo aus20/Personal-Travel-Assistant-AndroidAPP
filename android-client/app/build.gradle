@@ -5,11 +5,12 @@
 plugins {
     id 'com.android.application'  // The core Android application plugin
     id 'org.jetbrains.kotlin.android'  // Plugin for Kotlin support in Android
-    id 'kotlin-kapt'
-    id 'com.google.dagger.hilt.android' version '2.48' apply true
+    id 'com.google.devtools.ksp'
+    id 'com.google.dagger.hilt.android' version '2.51.1' apply true
     // Firebase bağlantısı için yazıldı.
     // app level build.gradle dosyasında yazılır.
-    id 'com.google.gms.google-services'  
+    id 'com.google.gms.google-services'
+    id 'org.jetbrains.kotlin.plugin.compose'
 }
 
 // Main Android configuration block
@@ -37,16 +38,6 @@ android {
         // Support for vector drawables
         vectorDrawables {
             useSupportLibrary true
-        }
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += [
-                    "room.schemaLocation": "$projectDir/schemas",
-                    "room.incremental": "true",
-                    "room.expandProjection": "true"
-                ]
-            }
         }
     }
 
@@ -100,6 +91,12 @@ android {
     }
 }
 
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+    arg("room.incremental", "true")
+    arg("room.expandProjection", "true")
+}
+
 // Dependencies required by the app
 dependencies {
     implementation 'androidx.test:core-ktx:1.6.1'
@@ -129,7 +126,7 @@ dependencies {
     // Room
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
+    ksp "androidx.room:room-compiler:$room_version"
     testImplementation "androidx.room:room-testing:$room_version"
 
     // Gson for JSON conversion
@@ -150,8 +147,8 @@ dependencies {
     implementation 'androidx.work:work-runtime-ktx:2.9.0'
 
     // Hilt (for @Inject, @Singleton, etc.)
-    implementation 'com.google.dagger:hilt-android:2.48'
-    kapt 'com.google.dagger:hilt-compiler:2.48'
+    implementation 'com.google.dagger:hilt-android:2.51.1'
+    ksp 'com.google.dagger:hilt-compiler:2.51.1'
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:33.13.0')

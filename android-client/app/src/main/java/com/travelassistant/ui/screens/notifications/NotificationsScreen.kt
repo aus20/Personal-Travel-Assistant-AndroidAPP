@@ -33,9 +33,9 @@ private data class Notification(
 private val sampleNotifications = listOf(
     Notification(
         type = NotificationType.FLIGHT_FOUND,
-        fromCity = "New York",
+        fromCity = "Istanbul",
         toCity = "London",
-        date = "Mar 15 - Mar 19, 2024",
+        date = "Jun 1 - Jun 5, 2025",
         message = "We found flights matching your search criteria! Check them out before they're gone.",
         actionText = "View Flights"
     ),
@@ -43,7 +43,7 @@ private val sampleNotifications = listOf(
         type = NotificationType.DEPARTURE_APPROACHING,
         fromCity = "Tokyo",
         toCity = "Paris",
-        date = "Apr 20 - Apr 30, 2024",
+        date = "Apr 20 - Apr 30, 2025",
         message = "Your departure date is approaching. We haven't found exact matches, but here are the best available options.",
         actionText = "See Options"
     ),
@@ -51,7 +51,7 @@ private val sampleNotifications = listOf(
         type = NotificationType.SEARCH_UPDATED,
         fromCity = "Sydney",
         toCity = "Dubai",
-        date = "May 10 - May 25, 2024",
+        date = "May 10 - May 25, 2025",
         message = "New flights have been added to your search. Prices are trending lower!",
         actionText = "Check Updates"
     )
