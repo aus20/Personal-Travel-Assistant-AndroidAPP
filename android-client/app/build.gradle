@@ -5,12 +5,24 @@
 plugins {
     id 'com.android.application'  // The core Android application plugin
     id 'org.jetbrains.kotlin.android'  // Plugin for Kotlin support in Android
-    id 'kotlin-kapt'
-    id 'com.google.dagger.hilt.android' version '2.48' apply true
+    //id 'kotlin-kapt'
+    id 'com.google.devtools.ksp'
+    //id 'org.jetbrains.kotlin.plugin.compose'
+    id 'com.google.dagger.hilt.android'
     // Firebase bağlantısı için yazıldı.
     // app level build.gradle dosyasında yazılır.
-    id 'com.google.gms.google-services'  
+    id 'com.google.gms.google-services'
+    id "org.jetbrains.kotlin.plugin.compose"
 }
+// KSP için annotation işlemci argümanları (Room için)
+// Bu blok android { ... } ve dependencies { ... } ile aynı seviyede olmalı
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+    arg("room.incremental", "true") // KSP, Room için artımlı işlemeyi zaten destekler, bu satır tutulabilir veya kaldırılabilir.
+    arg("room.expandProjection", "true")
+    // Hilt için KSP argümanları genellikle gerekmez, varsayılan ayarlar yeterlidir.
+}
+
 
 // Main Android configuration block
 android {
@@ -39,15 +51,15 @@ android {
             useSupportLibrary true
         }
 
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += [
-                    "room.schemaLocation": "$projectDir/schemas",
-                    "room.incremental": "true",
-                    "room.expandProjection": "true"
-                ]
-            }
-        }
+        //javaCompileOptions {
+        //    annotationProcessorOptions {
+        //        arguments += [
+        //            "room.schemaLocation": "$projectDir/schemas",
+        //            "room.incremental": "true",
+        //            "room.expandProjection": "true"
+        //        ]
+        //    }
+       // }
     }
 
     // Configure different build variants
@@ -82,7 +94,7 @@ android {
     // Jetpack Compose specific options
     composeOptions {
         // Compose compiler version must match the library version
-        kotlinCompilerExtensionVersion rootProject.ext.compose_version
+        kotlinCompilerExtensionVersion = rootProject.ext.compose_version
     }
 
     // Configure how resources are packaged
@@ -104,6 +116,7 @@ android {
 dependencies {
     implementation 'androidx.test:core-ktx:1.6.1'
     implementation 'androidx.test.ext:junit-ktx:1.2.1'
+    implementation 'androidx.room:room-runtime-android:2.7.1'
     def room_version = rootProject.ext.room_version
     def nav_version = rootProject.ext.nav_version
 
@@ -113,7 +126,7 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.8.2'      // Activity support for Compose
 
     // Compose
-    implementation platform('androidx.compose:compose-bom:2023.08.00')
+    implementation platform('androidx.compose:compose-bom:2024.05.00')
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-graphics'
     implementation 'androidx.compose.ui:ui-tooling-preview'
@@ -129,7 +142,8 @@ dependencies {
     // Room
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
+    //kapt "androidx.room:room-compiler:$room_version"
+    ksp "androidx.room:room-compiler:$room_version"
     testImplementation "androidx.room:room-testing:$room_version"
 
     // Gson for JSON conversion
@@ -139,7 +153,8 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'                               // Unit testing framework
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'            // Android testing support
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'// UI testing framework
-    androidTestImplementation platform('androidx.compose:compose-bom:2023.08.00')
+    //androidTestImplementation platform('androidx.compose:compose-bom:2023.08.00')
+    androidTestImplementation platform('androidx.compose:compose-bom:2024.05.00')
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
     
     // Debug-only dependencies
@@ -150,18 +165,21 @@ dependencies {
     implementation 'androidx.work:work-runtime-ktx:2.9.0'
 
     // Hilt (for @Inject, @Singleton, etc.)
-    implementation 'com.google.dagger:hilt-android:2.48'
-    kapt 'com.google.dagger:hilt-compiler:2.48'
-
+    //implementation 'com.google.dagger:hilt-android:2.48'
+    implementation "com.google.dagger:hilt-android:2.56.2"
+    //kapt 'com.google.dagger:hilt-compiler:2.48'
+    ksp 'com.google.dagger:hilt-compiler:2.56.2'
+    // Hilt Navigation Compose
+    implementation 'androidx.hilt:hilt-navigation-compose:1.2.0'
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:33.13.0')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-messaging-ktx'
 
     // Retrofit
-    implementation "com.squareup.retrofit2:retrofit:3.0.0" // En güncel stabil versiyonu kontrol et
-    implementation "com.squareup.retrofit2:converter-gson:3.0.0" // JSON işlemleri için Gson converter'ı
+    implementation "com.squareup.retrofit2:retrofit:2.9.0" // En güncel stabil versiyonu kontrol et
+    implementation "com.squareup.retrofit2:converter-gson:2.9.0" // JSON işlemleri için Gson converter'ı
     // OkHttp (Retrofit tarafından kullanılır, loglama için de faydalı)
-    implementation "com.squareup.okhttp3:okhttp:4.12.0" // En güncel stabil versiyonu kontrol et
-    implementation "com.squareup.okhttp3:logging-interceptor:4.12.0" // Network logları için (NetworkModule'de kullanmıştık)
+    implementation "com.squareup.okhttp3:okhttp:4.9.3" // En güncel stabil versiyonu kontrol et
+    implementation "com.squareup.okhttp3:logging-interceptor:4.9.3" // Network logları için (NetworkModule'de kullanmıştık)
 } 

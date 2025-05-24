@@ -1,6 +1,5 @@
 package com.travelassistant.ui.viewmodel.search
 
-import com.travelassistant.data.model.FlightResult
 import java.util.Date
 
 data class SearchData(
@@ -10,7 +9,7 @@ data class SearchData(
     val returnDate: Date? = null,
     val passengerCount: Int = 1,
     val isFormValid: Boolean = false,
-    val searchResults: List<FlightResult> = emptyList(),
+    val searchResults: List<Any> = emptyList(),
     val availableAirlines: List<String> = emptyList(),
     val filters: FlightFilters = FlightFilters(),
     val sortOption: SortOption = SortOption.PRICE_LOW_TO_HIGH

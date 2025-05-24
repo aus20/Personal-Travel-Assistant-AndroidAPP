@@ -47,7 +47,7 @@ abstract class BaseUiViewModel<State, Event> : BaseViewModel<UiState<State>, Eve
 
     protected fun <T> handleResult(
         block: suspend () -> T,
-        onSuccess: (T) -> Unit,
+        onSuccess: suspend (T) -> Unit,
         onError: (Throwable) -> Unit = { setError(it.message ?: "An error occurred") }
     ) {
         viewModelScope.launch {

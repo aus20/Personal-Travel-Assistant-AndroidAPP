@@ -1,5 +1,6 @@
 package com.travelassistant.ui.viewmodel.search
 
+import com.travelassistant.ui.viewmodel.search.FlightFilters
 import java.util.Date
 
 sealed class SearchEvent {

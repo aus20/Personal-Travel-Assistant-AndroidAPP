@@ -2,6 +2,7 @@ package com.travelassistant.ui.viewmodel.notifications
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.travelassistant.data.local.entity.LocalNotificationEntity
 import com.travelassistant.data.network.NetworkStateManager
 import com.travelassistant.data.repository.NotificationRepository
 import com.travelassistant.ui.viewmodel.BaseUiViewModel
@@ -10,8 +11,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -55,21 +58,23 @@ class NotificationsViewModel @Inject constructor(
                 val userId = "current_user"
                 notificationRepository.getNotificationsByUserId(userId)
             },
-            onSuccess = { notifications ->
-                updateState { currentState ->
-                    val notificationList = notifications.map { entity ->
-                        Notification(
-                            id = entity.id,
-                            type = determineNotificationType(entity),
-                            title = entity.title,
-                            message = entity.message,
-                            isRead = entity.readAt != null,
-                            createdAt = Date(entity.createdAt),
-                            action = determineNotificationAction(entity)
-                        )
-                    }
-                    UiState.Success(NotificationsState.Success(notifications = notificationList))
+            onSuccess = { notificationsFlow ->
+                // Flow'dan ilk listeyi (veya tümünü toplayıp) alıp sonra map işlemini yapın
+                val actualList = notificationsFlow.first() // Flow'dan List<LocalNotificationEntity> alır
+                val notificationUiList = actualList.map { entity -> // entity artık LocalNotificationEntity tipinde
+                    Notification( // Bu sizin UI modeliniz olan Notification
+                        id = entity.id, // Artık entity.id çözülmeli
+                        type = determineNotificationType(entity),
+                        title = entity.title, // Artık entity.title çözülmeli
+                        message = entity.message, // Artık entity.message çözülmeli
+                        isRead = entity.readAt != null, // Artık entity.readAt çözülmeli
+                        createdAt = Date(entity.createdAt), // java.util.Date importu ile entity.createdAt çözülmeli
+                        action = determineNotificationAction(entity)
+                    )
                 }
+
+                updateState { UiState.Success(NotificationsState.Success(notifications = notificationUiList)) }
+
             }
         )
     }

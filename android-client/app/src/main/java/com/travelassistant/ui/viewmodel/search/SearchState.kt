@@ -30,9 +30,9 @@ sealed class SearchResultsState {
 }
 
 data class FlightFilters(
-    val priceRange: ClosedFloatingPointRange<Float> = 0f..Float.MAX_VALUE,
-    val maxStops: Int = Int.MAX_VALUE,
-    val selectedAirlines: Set<String> = emptySet()
+    val priceRange: ClosedFloatingPointRange<Float> = 0f..1000f, // FilterSheet ile aynı varsayılan
+    val maxStops: Int = 2, // FilterSheet ile aynı varsayılan
+    val selectedAirlines: List<String> = emptyList() // FilterSheet ile aynı tip ve varsayılan
 )
 
 enum class SortOption {
@@ -40,4 +40,4 @@ enum class SortOption {
     PRICE_HIGH_TO_LOW,
     DURATION_SHORT_TO_LONG,
     DEPARTURE_TIME_EARLY_TO_LATE
-} 
+}

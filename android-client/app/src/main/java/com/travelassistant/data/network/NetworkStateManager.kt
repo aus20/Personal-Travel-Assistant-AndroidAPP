@@ -42,9 +42,9 @@ class NetworkStateManager private constructor(context: Context) {
         val networkRequest = NetworkRequest.Builder()
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             .build()
-        
+
         connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
-        
+
         // Check initial state
         val network = connectivityManager.activeNetwork
         val capabilities = connectivityManager.getNetworkCapabilities(network)
@@ -68,4 +68,4 @@ fun rememberNetworkState(): State<Boolean> {
     val context = LocalContext.current
     val networkStateManager = remember { NetworkStateManager.getInstance(context) }
     return networkStateManager.isOnline.collectAsState()
-} 
+}

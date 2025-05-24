@@ -36,13 +36,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.travelassistant.ui.components.common.buttons.PrimaryButton
+import com.travelassistant.ui.viewmodel.search.FlightFilters
 
-// Filter options for flight results
-data class FlightFilters(
-    val priceRange: ClosedFloatingPointRange<Float> = 0f..1000f,
-    val maxStops: Int = 2,
-    val selectedAirlines: List<String> = emptyList()
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

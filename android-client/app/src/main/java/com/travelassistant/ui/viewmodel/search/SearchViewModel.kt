@@ -4,12 +4,15 @@ import androidx.lifecycle.viewModelScope
 import com.travelassistant.data.network.NetworkStateManager
 import com.travelassistant.data.repository.FlightSearchRepository
 import com.travelassistant.data.repository.FlightResultRepository
+import com.travelassistant.data.local.entity.SavedFlightSearchEntity
+import com.travelassistant.data.model.toFlightResult
 import com.travelassistant.ui.viewmodel.BaseUiViewModel
 import com.travelassistant.ui.viewmodel.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
@@ -145,8 +148,8 @@ class SearchViewModel @Inject constructor(
                     destination = currentState.data.toLocation,
                     departureDate = currentState.data.departureDate?.time ?: 0L,
                     returnDate = currentState.data.returnDate?.time,
-                    maxPrice = currentState.data.filters.maxPrice,
-                    preferredAirlines = currentState.data.filters.preferredAirlines,
+                    maxPrice = if (currentState.data.filters.priceRange.endInclusive == Float.MAX_VALUE) Double.MAX_VALUE else currentState.data.filters.priceRange.endInclusive.toDouble(),
+                    preferredAirlines = currentState.data.filters.selectedAirlines.toList(),
                     maxStops = currentState.data.filters.maxStops,
                     createdAt = System.currentTimeMillis(),
                     updatedAt = System.currentTimeMillis(),
@@ -157,7 +160,7 @@ class SearchViewModel @Inject constructor(
                 val searchId = flightSearchRepository.insertSearch(searchEntity)
 
                 // Get flight results
-                flightResultRepository.getFlightResultsBySearchId(searchId)
+                flightResultRepository.getFlightResultsBySearchId(searchId).first()
             },
             onSuccess = { results ->
                 updateState { currentState ->
@@ -209,4 +212,4 @@ class SearchViewModel @Inject constructor(
                 departureDate != null &&
                 fromLocation != toLocation
     }
-} 
+}

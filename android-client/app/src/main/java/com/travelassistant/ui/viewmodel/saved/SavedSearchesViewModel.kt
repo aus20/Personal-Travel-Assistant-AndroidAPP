@@ -1,5 +1,8 @@
 package com.travelassistant.ui.viewmodel.saved
 
+import androidx.lifecycle.viewModelScope
+import androidx.room.util.copy
+import com.travelassistant.data.model.toFlightResult
 import com.travelassistant.data.network.NetworkStateManager
 import com.travelassistant.data.repository.FlightSearchRepository
 import com.travelassistant.data.repository.FlightResultRepository
@@ -9,7 +12,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
 
@@ -49,7 +54,7 @@ class SavedSearchesViewModel @Inject constructor(
                 // TODO: Get current user ID from auth manager
                 val userId = "current_user"
                 val currentTime = System.currentTimeMillis()
-                flightSearchRepository.getActiveSearches(userId, currentTime)
+                flightSearchRepository.getActiveSearches(userId, currentTime).first()
             },
             onSuccess = { searches ->
                 updateState { currentState ->
@@ -95,22 +100,33 @@ class SavedSearchesViewModel @Inject constructor(
                 }
 
                 // Get flight results for this search
-                flightResultRepository.getFlightResultsBySearchId(searchId)
+                flightResultRepository.getFlightResultsBySearchId(searchId).first()
             },
             onSuccess = { results ->
-                updateState { currentState ->
-                    when (currentState) {
+                updateState { currentUiState ->
+                    when (currentUiState) {
                         is UiState.Success -> {
-                            val updatedSearches = currentState.data.savedSearches.map { savedSearch ->
-                                if (savedSearch.id == searchId) {
-                                    savedSearch.copy(lastSearchResults = results.map { it.toFlightResult() })
-                                } else {
-                                    savedSearch
+                            // currentUiState.data is of type SavedSearchesState
+                            val currentSpecificState = currentUiState.data
+                            if (currentSpecificState is SavedSearchesState.Success) {
+                                // Now currentSpecificState.savedSearches is accessible
+                                val updatedSearches = currentSpecificState.savedSearches.map { savedSearch ->
+                                    if (savedSearch.id == searchId) {
+                                        // Ensure 'results' is a List and 'it.toFlightResult()' is valid
+                                        savedSearch.copy(lastSearchResults = results.map { it.toFlightResult() })
+                                    } else {
+                                        savedSearch
+                                    }
                                 }
+                                // Return a new UiState.Success wrapping the updated SavedSearchesState.Success
+                                UiState.Success(currentSpecificState.copy(savedSearches = updatedSearches))
+                            } else {
+                                // If UiState.Success holds a SavedSearchesState that isn't .Success
+                                // (e.g. UiState.Success(SavedSearchesState.Loading)), return current state.
+                                currentUiState
                             }
-                            UiState.Success(currentState.data.copy(savedSearches = updatedSearches))
                         }
-                        else -> currentState
+                        else -> currentUiState // For UiState.Initial, UiState.Loading, UiState.Error
                     }
                 }
             }

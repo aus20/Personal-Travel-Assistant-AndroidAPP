@@ -34,17 +34,11 @@ import com.travelassistant.ui.components.common.cards.DetailedFlightCard
 import com.travelassistant.ui.components.common.states.EmptyState
 import com.travelassistant.ui.components.common.states.OfflineStatusBar
 import com.travelassistant.ui.components.features.search.FilterSheet
-import com.travelassistant.ui.components.features.search.FlightFilters
 import java.util.Date
 import androidx.compose.ui.tooling.preview.Preview
+import com.travelassistant.ui.viewmodel.search.FlightFilters
+import com.travelassistant.ui.viewmodel.search.SortOption
 
-// Sort options for flight results
-enum class SortOption {
-    PRICE_LOW_TO_HIGH,
-    PRICE_HIGH_TO_LOW,
-    DURATION_SHORT_TO_LONG,
-    DEPARTURE_TIME_EARLY_TO_LATE
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -190,7 +184,7 @@ fun SearchResultsScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(vertical = 8.dp),
-                                onClick = { onFlightClick(flight) }
+                                onClick = { onFlightClick(flight as FlightResult) }
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                         }
@@ -220,7 +214,7 @@ fun SearchResultsScreenPreview() {
             fromCity = "New York",
             toCity = "London",
             departureDate = Date(),
-            flights = emptyList(),
+            flights = emptyList<FlightResult>(),
             isLoading = false,
             isOnline = true,
             currentFilters = FlightFilters(),
@@ -247,7 +241,7 @@ fun SearchResultsScreenEmptyPreview() {
             fromCity = "Paris",
             toCity = "Tokyo",
             departureDate = Date(),
-            flights = emptyList(),
+            flights = emptyList<FlightResult>(),
             isLoading = false,
             isOnline = true,
             currentFilters = FlightFilters(),

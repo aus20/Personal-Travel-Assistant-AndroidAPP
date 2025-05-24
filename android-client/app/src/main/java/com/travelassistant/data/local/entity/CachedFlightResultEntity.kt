@@ -33,4 +33,6 @@ data class CachedFlightResultEntity(
     val cachedAt: Long,
     val expiresAt: Long,
     val previousPrice: Double? = null
-) 
+) {
+
+}
