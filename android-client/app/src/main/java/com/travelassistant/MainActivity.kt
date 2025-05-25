@@ -13,7 +13,6 @@ import com.travelassistant.ui.screens.MainScreen
 // App theme
 import com.travelassistant.ui.theme.TravelAssistantTheme
 import com.travelassistant.ui.viewmodel.authTest.AuthViewModel
-import dagger.hilt.android.AndroidEntryPoint
 
 import androidx.navigation.compose.rememberNavController
 import com.travelassistant.ui.navigation.RootNavGraph
