@@ -1,5 +1,6 @@
 package com.travelassistant.ui.navigation
 
+import androidx.compose.material3.Text // For Login placeholder
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -7,167 +8,108 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.compose.ui.Modifier
-import com.travelassistant.ui.viewmodel.saved.SavedSearchesViewModel
-import com.travelassistant.ui.screens.search.SearchScreen
-import com.travelassistant.ui.screens.search.SearchResultsScreen
-import com.travelassistant.ui.screens.saved.SavedSearchesScreen
-import com.travelassistant.ui.screens.notifications.NotificationsScreen
-import com.travelassistant.ui.screens.profile.ProfileScreen
-import com.travelassistant.ui.screens.flight.FlightDetailsScreen
-import com.travelassistant.data.model.FlightResult
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+// Import your new RegisterScreen
+import com.travelassistant.ui.screens.register.RegisterScreen
+// Import your existing screens that will be part of the "main app flow"
+import com.travelassistant.ui.screens.MainScreen // Assuming MainScreen hosts your bottom nav + content
+// remove other direct screen imports if MainScreen handles them internally
+
+// Hoisted state for SearchScreen is better managed within SearchViewModel or passed differently
+// For now, keeping your existing SearchScreen structure for simplicity if MainScreen doesn't isolate it.
 
 @Composable
-fun NavGraph(
+fun RootNavGraph( // Renamed to RootNavGraph for clarity, MainActivity will call this
     navController: NavHostController,
-    startDestination: String = Screen.Search.route,
     modifier: Modifier = Modifier
 ) {
     NavHost(
         navController = navController,
-        startDestination = startDestination,
+        startDestination = Screen.Register.route, // START WITH REGISTER SCREEN
         modifier = modifier
     ) {
-        composable(Screen.Search.route) {
-            // Hoist state for the SearchScreen
-            var fromLocation by remember { mutableStateOf("") }
-            var toLocation by remember { mutableStateOf("") }
-            var departureDate by remember { mutableStateOf<Date?>(null) }
-            var returnDate by remember { mutableStateOf<Date?>(null) }
-            var passengerCount by remember { mutableStateOf(1) }
-
-            SearchScreen(
-                fromLocation = fromLocation,
-                toLocation = toLocation,
-                departureDate = departureDate,
-                returnDate = returnDate,
-                passengerCount = passengerCount,
-                onFromLocationChange = { fromLocation = it },
-                onToLocationChange = { toLocation = it },
-                onDepartureDateChange = { departureDate = it },
-                onReturnDateChange = { returnDate = it },
-                onPassengerCountChange = { passengerCount = it },
-                onSearchClick = {
-                    // Perform navigation using the hoisted state
-                    // Ensure departureDate is not null before formatting,
-                    // SearchScreen's button logic should already enforce this.
-                    departureDate?.let { depDate ->
-                        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                        val departureDateStr = dateFormat.format(depDate)
-                        val returnDateStr = returnDate?.let { dateFormat.format(it) }
-
-                        navController.navigate(
-                            Screen.SearchResults.createRoute(
-                                fromCity = fromLocation,
-                                toCity = toLocation,
-                                departureDate = departureDateStr,
-                                returnDate = returnDateStr
-                            )
-                        )
-                    }
-                }
-            )
+        // Authentication Flow
+        composable(Screen.Register.route) {
+            RegisterScreen(navController = navController)
         }
 
-            composable(
-            route = Screen.SearchResults.route,
-            arguments = listOf(
-                navArgument("fromCity") { type = NavType.StringType },
-                navArgument("toCity") { type = NavType.StringType },
-                navArgument("departureDate") { type = NavType.StringType },
-                navArgument("returnDate") { type = NavType.StringType; nullable = true; defaultValue = "" }
-            )
-        ) { backStackEntry ->
-            val fromCity = backStackEntry.arguments?.getString("fromCity") ?: ""
-            val toCity = backStackEntry.arguments?.getString("toCity") ?: ""
-            val departureDateStr = backStackEntry.arguments?.getString("departureDate") ?: ""
-            val returnDateStr = backStackEntry.arguments?.getString("returnDate")
-            
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val departureDate = try {
-                dateFormat.parse(departureDateStr) ?: Date()
-            } catch (e: Exception) {
-                Date()
+        composable(Screen.Login.route) {
+            // You will implement LoginScreen similar to RegisterScreen
+            // For now, a placeholder:
+            Text("Login Screen: Implement Me! Navigate to MainAppFlow on success.")
+            // Example: LoginScreen(navController = navController)
+        }
+
+        // Main Application Flow (after login)
+        composable(Screen.MainAppFlow.route) {
+            // This is where your app with the bottom navigation bar starts.
+            // MainScreen should internally set up its own NavHost for Search, Saved, Notifications, Profile.
+            //MainScreen(rootNavController = navController) // Pass rootNavController if MainScreen needs to navigate outside its own flow (e.g. logout)
+        }
+
+        // If SearchResults and FlightDetails are part of the MainAppFlow and navigated to
+        // from screens within MainScreen's NavHost, they should be defined within
+        // MainScreen's NavHost.
+        // If they can be reached globally OR if MainScreen doesn't have its own NavHost
+        // and this RootNavGraph handles ALL navigation, then they can stay here.
+        // For clarity, let's assume for now MainScreen manages its own internal navigation.
+        // If not, you'd put your original composable(Screen.Search.route) { ... } etc. here,
+        // and MainScreen would just be a Scaffold.
+
+        // Example: If MainScreen DOES NOT have its own NavHost, you would have your
+        // original Search, SavedSearches, etc. routes here.
+        // For instance:
+        // composable(Screen.Search.route) { SearchScreen(...) }
+        // composable(Screen.SavedSearches.route) { SavedSearchesScreen(...) }
+        // etc.
+        // And Screen.MainAppFlow.route would then navigate to Screen.Search.route as default.
+
+        // Given your current NavGraph.kt which defines all these, MainScreen might just be
+        // a Scaffold that calls a composable which IS your old NavGraph content.
+        // Let's make MainAppFlow lead to a new composable MainAppNavigation which IS your old NavGraph content.
+
+        // THIS IS ONE WAY: MainScreen IS the NavHost for bottom bar items
+        // composable(Screen.MainAppFlow.route) {
+        //     MainScreen(rootNavController = navController)
+        // }
+
+        // ALTERNATIVE: If MainScreen is just a Scaffold and this RootNavGraph handles ALL navigation.
+        // In this case, you would NOT navigate to Screen.MainAppFlow.route from Login.
+        // Instead, Login would navigate to Screen.Search.route (or your default main screen).
+        // And all your original composable routes for Search, SearchResults, Profile, etc.
+        // would remain in THIS NavHost.
+
+        // Let's go with the assumption that MainScreen will host the bottom navigation
+        // and its own NavHost for the main app screens. This is cleaner for separation.
+        // So, from LoginScreen, you will navigate to Screen.MainAppFlow.route.
+        // And MainScreen.kt will look something like:
+
+        /*
+        // In MainScreen.kt (Conceptual)
+        @Composable
+        fun MainScreen(rootNavController: NavHostController) {
+            val mainAppNavController = rememberNavController()
+            Scaffold(
+                bottomBar = { BottomNavigationBar(navController = mainAppNavController) }
+            ) { paddingValues ->
+                AppNavHost( // This is a new NavHost for screens within MainScreen
+                    navController = mainAppNavController,
+                    modifier = Modifier.padding(paddingValues),
+                    rootNavController = rootNavController // Pass if child screens need to trigger root navigation
+                )
             }
-            
-            val returnDate = if (!returnDateStr.isNullOrEmpty()) {
-                try {
-                    dateFormat.parse(returnDateStr)
-                } catch (e: Exception) {
-                    null
-                }
-            } else {
-                null
+        }
+
+        @Composable
+        fun AppNavHost(navController: NavHostController, modifier: Modifier, rootNavController: NavHostController) {
+            NavHost(navController = navController, startDestination = Screen.Search.route, modifier = modifier) {
+                composable(Screen.Search.route) { /* Your SearchScreen composable */ }
+                composable(Screen.SavedSearches.route) { /* Your SavedSearchesScreen composable */ }
+                // ... other main app screens ...
+                // SearchResults and FlightDetails would be here if navigated from Search/Saved etc.
+                 composable(Screen.SearchResults.route, ...) { SearchResultsScreen(...) }
+                 composable(Screen.FlightDetails.route, ...) { FlightDetailsScreen(...) }
             }
-            /*
-            SearchResultsScreen(
-                fromCity = fromCity,
-                toCity = toCity,
-                departureDate = departureDate,
-                returnDate = returnDate,
-                onBackClick = { navController.popBackStack() },
-                onFlightClick = { flight ->
-                    navController.navigate(Screen.FlightDetails.createRoute(flight.id))
-                }
-            )*/
         }
-
-        composable(
-            route = Screen.FlightDetails.route,
-            arguments = listOf(
-                navArgument("flightId") { type = NavType.StringType }
-            )
-        ) { backStackEntry ->
-            val flightId = backStackEntry.arguments?.getString("flightId") ?: ""
-            // TODO: Fetch flight details using flightId
-            // For now, we'll use a dummy flight
-            val dummyFlight = FlightResult(
-                id = flightId,
-                airline = "Delta Airlines",
-                airlineLogo = "delta_logo",
-                flightNumber = "DL123",
-                departureAirport = "JFK",
-                arrivalAirport = "LAX",
-                departureTime = Date(),
-                arrivalTime = Date(System.currentTimeMillis() + 5 * 60 * 60 * 1000),
-                duration = "5h 30m",
-                stops = 0,
-                price = 299.99,
-                currency = "USD"
-            )
-            
-            FlightDetailsScreen(
-                flight = dummyFlight,
-                onBackClick = { navController.popBackStack() }
-            )
-        }
-/*
-        composable(Screen.SavedSearches.route) {
-            // 1. Obtain ViewModel instance
-            val viewModel: SavedSearchesViewModel = hiltViewModel()
-
-            // 2. Collect state from ViewModel
-            val savedSearchesList by viewModel.savedSearches.collectAsState()
-
-            // 3. Pass state and event handlers to SavedSearchesScreen
-            SavedSearchesScreen(
-                savedSearches = savedSearchesList,
-                onDeleteSearch = { search -> viewModel.onDeleteSearch(search) }
-            )
-        }
-*/
-        composable(Screen.Notifications.route) {
-            NotificationsScreen()
-        }
-
-        composable(Screen.Profile.route) {
-            ProfileScreen()
-        }
+        */
     }
-} 
+}

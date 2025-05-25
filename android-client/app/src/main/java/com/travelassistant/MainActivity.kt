@@ -15,30 +15,32 @@ import com.travelassistant.ui.theme.TravelAssistantTheme
 import com.travelassistant.ui.viewmodel.authTest.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
+import androidx.navigation.compose.rememberNavController
+import com.travelassistant.ui.navigation.RootNavGraph
+import dagger.hilt.android.AndroidEntryPoint
+
 /**
  * Main entry point of the application
  * This activity sets up the Compose UI and displays our test screen
  */
+
+
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    // Test için yapıldı
-    private val authViewModel: AuthViewModel by viewModels() // AuthViewModel'i Hilt ile al
-
+  // private val authViewModel: AuthViewModel by viewModels() // AuthViewModel'i Hilt ile al
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // ------ TEST AMAÇLI ÇAĞRI ------
+        /*
+         // ------ TEST AMAÇLI ÇAĞRI ------
         Log.d("MainActivityTest", "onCreate çağrıldı, testRegisterUser tetikleniyor.")
         authViewModel.testLoginUser() 
-        // ------ TEST AMAÇLI ÇAĞRI SONU ------
-
-        // Set up the Compose UI content
+        // ------ TEST AMAÇLI ÇAĞRI SONU -----*/
         setContent {
-            // Apply our custom theme to the entire app
             TravelAssistantTheme {
-                // Display the test screen with all our components
-                MainScreen()
+                val navController = rememberNavController()
+                RootNavGraph(navController = navController) // Call your root graph
             }
         }
     }
-} 
+}
