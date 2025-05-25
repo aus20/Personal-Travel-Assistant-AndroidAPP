@@ -28,8 +28,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         // ------ TEST AMAÇLI ÇAĞRI ------
-        Log.d("MainActivityTest", "onCreate çağrıldı, testRegisterUser tetikleniyor.")
-        authViewModel.testLoginUser() 
+        //Log.d("MainActivityTest", "onCreate çağrıldı, testRegisterUser tetikleniyor.")
+        //authViewModel.testLoginUser()
         // ------ TEST AMAÇLI ÇAĞRI SONU ------
 
         // Set up the Compose UI content
