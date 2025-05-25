@@ -6,6 +6,7 @@ import com.travelassistant.data.network.NetworkStateManager
 import com.travelassistant.data.repository.NotificationRepository
 import com.travelassistant.ui.viewmodel.BaseUiViewModel
 import com.travelassistant.ui.viewmodel.UiState
+import com.travelassistant.data.local.entity.LocalNotificationEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,6 +14,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.flow.first
+import java.util.Date
 
 @HiltViewModel
 class NotificationsViewModel @Inject constructor(
@@ -53,7 +56,7 @@ class NotificationsViewModel @Inject constructor(
             block = {
                 // TODO: Get current user ID from auth manager
                 val userId = "current_user"
-                notificationRepository.getNotificationsByUserId(userId)
+                notificationRepository.getNotificationsByUserId(userId).first()
             },
             onSuccess = { notifications ->
                 updateState { currentState ->

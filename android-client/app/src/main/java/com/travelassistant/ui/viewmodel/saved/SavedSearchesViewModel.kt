@@ -1,5 +1,7 @@
 package com.travelassistant.ui.viewmodel.saved
 
+import androidx.lifecycle.viewModelScope
+import com.travelassistant.data.local.entity.CachedFlightResultEntity
 import com.travelassistant.data.network.NetworkStateManager
 import com.travelassistant.data.repository.FlightSearchRepository
 import com.travelassistant.data.repository.FlightResultRepository
@@ -9,9 +11,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
+import kotlinx.coroutines.flow.first
 
 @HiltViewModel
 class SavedSearchesViewModel @Inject constructor(
@@ -49,9 +52,10 @@ class SavedSearchesViewModel @Inject constructor(
                 // TODO: Get current user ID from auth manager
                 val userId = "current_user"
                 val currentTime = System.currentTimeMillis()
-                flightSearchRepository.getActiveSearches(userId, currentTime)
+                // Collect the first emission from the Flow, which will be the list
+                flightSearchRepository.getActiveSearches(userId, currentTime).first()
             },
-            onSuccess = { searches ->
+            onSuccess = { searches -> // 'searches' will now be List<SavedFlightSearchEntity>
                 updateState { currentState ->
                     val savedSearches = searches.map { entity ->
                         SavedSearch(
@@ -86,6 +90,7 @@ class SavedSearchesViewModel @Inject constructor(
         )
     }
 
+
     private fun refreshSearchResults(searchId: String) {
         handleResult(
             block = {
@@ -94,23 +99,34 @@ class SavedSearchesViewModel @Inject constructor(
                     throw IllegalStateException("Search not found")
                 }
 
-                // Get flight results for this search
-                flightResultRepository.getFlightResultsBySearchId(searchId)
+                // Get flight results for this search and collect the first list from the Flow
+                flightResultRepository.getFlightResultsBySearchId(searchId).first()
             },
-            onSuccess = { results ->
-                updateState { currentState ->
-                    when (currentState) {
+            onSuccess = { results -> // 'results' will now be List<SomeEntityType>
+                updateState { currentUiState -> // currentUiState is UiState<SavedSearchesState>
+                    when (currentUiState) {
                         is UiState.Success -> {
-                            val updatedSearches = currentState.data.savedSearches.map { savedSearch ->
-                                if (savedSearch.id == searchId) {
-                                    savedSearch.copy(lastSearchResults = results.map { it.toFlightResult() })
-                                } else {
-                                    savedSearch
+                            // currentUiState.data is of type SavedSearchesState
+                            val currentSpecificState = currentUiState.data
+                            if (currentSpecificState is SavedSearchesState.Success) {
+                                // Now currentSpecificState.savedSearches is accessible
+                                val updatedSearches = currentSpecificState.savedSearches.map { savedSearch ->
+                                    if (savedSearch.id == searchId) {
+                                        // Ensure 'results' is a List and 'it.toFlightResult()' is valid
+                                        savedSearch.copy(lastSearchResults = results.map { it.toFlightResult() })
+                                    } else {
+                                        savedSearch
+                                    }
                                 }
+                                // Return a new UiState.Success wrapping the updated SavedSearchesState.Success
+                                UiState.Success(currentSpecificState.copy(savedSearches = updatedSearches))
+                            } else {
+                                // If UiState.Success holds a SavedSearchesState that isn't .Success
+                                // (e.g. UiState.Success(SavedSearchesState.Loading)), return current state.
+                                currentUiState
                             }
-                            UiState.Success(currentState.data.copy(savedSearches = updatedSearches))
                         }
-                        else -> currentState
+                        else -> currentUiState // For UiState.Initial, UiState.Loading, UiState.Error
                     }
                 }
             }
@@ -120,4 +136,8 @@ class SavedSearchesViewModel @Inject constructor(
     private fun handleViewSearch(searchId: String) {
         // TODO: Navigate to search results screen
     }
-} 
+}
+
+private fun CachedFlightResultEntity.toFlightResult() {
+    TODO("Not yet implemented")
+}

@@ -36,6 +36,7 @@ import com.travelassistant.ui.components.common.states.OfflineStatusBar
 import com.travelassistant.ui.components.features.search.FilterSheet
 import com.travelassistant.ui.components.features.search.FlightFilters
 import java.util.Date
+import java.util.Calendar
 import androidx.compose.ui.tooling.preview.Preview
 
 // Sort options for flight results
@@ -215,19 +216,77 @@ fun SearchResultsScreen(
 @Preview(showBackground = true, name = "Search Results - With Flights")
 @Composable
 fun SearchResultsScreenPreview() {
+
+    fun createDate(year: Int, month: Int, day: Int, hour: Int, minute: Int): Date {
+        return Calendar.getInstance().apply {
+            set(Calendar.YEAR, year)
+            set(Calendar.MONTH, month - 1) // Calendar.MONTH is 0-indexed
+            set(Calendar.DAY_OF_MONTH, day)
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, minute)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.time
+    }
+
+    val mockFlights = listOf(
+        FlightResult(
+            id = "1",
+            airline = "Turkish Airlines",
+            airlineLogo = "https://via.placeholder.com/50?text=SA", // Placeholder logo URL
+            flightNumber = "TK5343",
+            departureAirport = "IST",
+            arrivalAirport = "LHR",
+            departureTime = createDate(2025, 6, 1, 10, 30),
+            arrivalTime = createDate(2025, 6, 1, 11, 45),
+            duration = "3h 15m",
+            stops = 0,
+            price = 125.99,
+            currency = "USD"
+        ),
+        FlightResult(
+            id = "2",
+            airline = "Turkish Airlines",
+            airlineLogo = "https://via.placeholder.com/50?text=BS", // Placeholder logo URL
+            flightNumber = "TK5362",
+            departureAirport = "IST",
+            arrivalAirport = "LHR",
+            departureTime = createDate(2025, 6, 1, 12, 0),
+            arrivalTime = createDate(2025, 6, 1, 13, 30), // Longer flight with a stop
+            duration = "3h 30m",
+            stops = 0,
+            price = 130.79,
+            currency = "USD"
+        ),
+        FlightResult(
+            id = "3",
+            airline = "Turkish Airlines",
+            airlineLogo = "https://via.placeholder.com/50?text=CF", // Placeholder logo URL
+            flightNumber = "TK5381",
+            departureAirport = "IST",
+            arrivalAirport = "LHR",
+            departureTime = createDate(2025, 6, 1, 17, 0),
+            arrivalTime = createDate(2025, 6, 1, 18, 30),
+            duration = "3h 30m",
+            stops = 0,
+            price = 114.92,
+            currency = "USD"
+        )
+    )
+
     MaterialTheme {
         SearchResultsScreen(
-            fromCity = "New York",
+            fromCity = "Istanbul",
             toCity = "London",
-            departureDate = Date(),
-            flights = emptyList(),
+            departureDate = createDate(2025, 6, 1, 0, 0),
+            flights = mockFlights,
             isLoading = false,
             isOnline = true,
             currentFilters = FlightFilters(),
             selectedSortOption = SortOption.PRICE_LOW_TO_HIGH,
             showSortMenu = false,
             showFilterSheet = false,
-            availableAirlines = emptyList(),
+            availableAirlines = listOf("Star Airline", "BlueSky Airways", "Connect Flights"),
             onBackClick = {},
             onFlightClick = {},
             onSortOptionSelected = {},

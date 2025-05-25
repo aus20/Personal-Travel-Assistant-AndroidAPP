@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
-
+/*
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val preferencesRepository: PreferencesRepository,
@@ -31,7 +31,7 @@ class ProfileViewModel @Inject constructor(
                 _isOnline.value = isOnline
             }
         }
-        loadProfile()
+        //loadProfile()
     }
 
     fun loadProfile() {
@@ -178,4 +178,4 @@ class ProfileViewModel @Inject constructor(
             }
         }
     }
-} 
+} */

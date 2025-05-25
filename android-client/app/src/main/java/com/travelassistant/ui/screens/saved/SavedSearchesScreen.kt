@@ -53,7 +53,7 @@ fun SavedSearchesScreen(
                             fromCity = search.from,
                             toCity = search.to,
                             date = search.date,
-                            price = "400$",
+                            price = "150$",
                             onDelete = { onDeleteSearch(search) }
                         )
                     }
@@ -68,9 +68,9 @@ fun SavedSearchesScreen(
 fun SavedSearchesScreenPreview() {
     SavedSearchesScreen(
         savedSearches = listOf(
-            SavedSearch("New York", "London", "Mar 15 - Mar 19, 2024"),
-            SavedSearch("Tokyo", "Paris", "Apr 20 - Apr 30, 2024"),
-            SavedSearch("Sydney", "Dubai", "May 10 - May 25, 2024")
+            SavedSearch("Istanbul", "London", "Jun 1 - Jun 5, 2025"),
+            SavedSearch("Tokyo", "Paris", "Apr 20 - Apr 30, 2025"),
+            SavedSearch("Sydney", "Dubai", "May 10 - May 25, 2025")
         ),
         onDeleteSearch = {}
     )

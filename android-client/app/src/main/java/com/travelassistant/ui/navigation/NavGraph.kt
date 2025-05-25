@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.compose.ui.Modifier
+import com.travelassistant.ui.viewmodel.saved.SavedSearchesViewModel
 import com.travelassistant.ui.screens.search.SearchScreen
 import com.travelassistant.ui.screens.search.SearchResultsScreen
 import com.travelassistant.ui.screens.saved.SavedSearchesScreen
@@ -17,6 +18,10 @@ import com.travelassistant.data.model.FlightResult
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 @Composable
 fun NavGraph(
@@ -30,25 +35,47 @@ fun NavGraph(
         modifier = modifier
     ) {
         composable(Screen.Search.route) {
+            // Hoist state for the SearchScreen
+            var fromLocation by remember { mutableStateOf("") }
+            var toLocation by remember { mutableStateOf("") }
+            var departureDate by remember { mutableStateOf<Date?>(null) }
+            var returnDate by remember { mutableStateOf<Date?>(null) }
+            var passengerCount by remember { mutableStateOf(1) }
+
             SearchScreen(
-                onSearchResults = { fromCity, toCity, departureDate, returnDate ->
-                    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                    val departureDateStr = dateFormat.format(departureDate)
-                    val returnDateStr = returnDate?.let { dateFormat.format(it) }
-                    
-                    navController.navigate(
-                        Screen.SearchResults.createRoute(
-                            fromCity = fromCity,
-                            toCity = toCity,
-                            departureDate = departureDateStr,
-                            returnDate = returnDateStr
+                fromLocation = fromLocation,
+                toLocation = toLocation,
+                departureDate = departureDate,
+                returnDate = returnDate,
+                passengerCount = passengerCount,
+                onFromLocationChange = { fromLocation = it },
+                onToLocationChange = { toLocation = it },
+                onDepartureDateChange = { departureDate = it },
+                onReturnDateChange = { returnDate = it },
+                onPassengerCountChange = { passengerCount = it },
+                onSearchClick = {
+                    // Perform navigation using the hoisted state
+                    // Ensure departureDate is not null before formatting,
+                    // SearchScreen's button logic should already enforce this.
+                    departureDate?.let { depDate ->
+                        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                        val departureDateStr = dateFormat.format(depDate)
+                        val returnDateStr = returnDate?.let { dateFormat.format(it) }
+
+                        navController.navigate(
+                            Screen.SearchResults.createRoute(
+                                fromCity = fromLocation,
+                                toCity = toLocation,
+                                departureDate = departureDateStr,
+                                returnDate = returnDateStr
+                            )
                         )
-                    )
+                    }
                 }
             )
         }
 
-        composable(
+            composable(
             route = Screen.SearchResults.route,
             arguments = listOf(
                 navArgument("fromCity") { type = NavType.StringType },
@@ -78,7 +105,7 @@ fun NavGraph(
             } else {
                 null
             }
-            
+            /*
             SearchResultsScreen(
                 fromCity = fromCity,
                 toCity = toCity,
@@ -88,7 +115,7 @@ fun NavGraph(
                 onFlightClick = { flight ->
                     navController.navigate(Screen.FlightDetails.createRoute(flight.id))
                 }
-            )
+            )*/
         }
 
         composable(
@@ -120,11 +147,21 @@ fun NavGraph(
                 onBackClick = { navController.popBackStack() }
             )
         }
-
+/*
         composable(Screen.SavedSearches.route) {
-            SavedSearchesScreen()
-        }
+            // 1. Obtain ViewModel instance
+            val viewModel: SavedSearchesViewModel = hiltViewModel()
 
+            // 2. Collect state from ViewModel
+            val savedSearchesList by viewModel.savedSearches.collectAsState()
+
+            // 3. Pass state and event handlers to SavedSearchesScreen
+            SavedSearchesScreen(
+                savedSearches = savedSearchesList,
+                onDeleteSearch = { search -> viewModel.onDeleteSearch(search) }
+            )
+        }
+*/
         composable(Screen.Notifications.route) {
             NotificationsScreen()
         }

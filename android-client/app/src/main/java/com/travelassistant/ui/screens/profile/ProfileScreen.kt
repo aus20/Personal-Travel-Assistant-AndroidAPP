@@ -79,13 +79,13 @@ fun ProfileScreen() {
                     Spacer(modifier = Modifier.height(16.dp))
                     
                     Text(
-                        text = "John Doe",
+                        text = "Alperen Us",
                         style = MaterialTheme.typography.headlineMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     
                     Text(
-                        text = "john.doe@example.com",
+                        text = "alperen.us@gmail.com",
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
                     )
