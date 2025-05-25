@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.travelassistant.ui.components.navigation.BottomNavigationBar
 import com.travelassistant.ui.navigation.NavGraph
+import com.travelassistant.ui.navigation.RootNavGraph
 
 @Composable
 fun MainScreen() {
@@ -15,7 +16,7 @@ fun MainScreen() {
     Scaffold(
         bottomBar = { BottomNavigationBar(navController = navController) }
     ) { paddingValues ->
-        NavGraph(
+        RootNavGraph(
             navController = navController,
             modifier = Modifier.padding(paddingValues)
         )

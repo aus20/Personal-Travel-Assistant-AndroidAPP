@@ -11,10 +11,31 @@ import com.travelassistant.ui.screens.MainScreen
 // App theme
 import com.travelassistant.ui.theme.TravelAssistantTheme
 
+import androidx.navigation.compose.rememberNavController
+import com.travelassistant.ui.navigation.RootNavGraph
+import dagger.hilt.android.AndroidEntryPoint
+
 /**
  * Main entry point of the application
  * This activity sets up the Compose UI and displays our test screen
  */
+
+
+
+@AndroidEntryPoint
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            TravelAssistantTheme {
+                val navController = rememberNavController()
+                RootNavGraph(navController = navController) // Call your root graph
+            }
+        }
+    }
+}
+
+/*
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,4 +48,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-} 
+} */
