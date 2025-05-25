@@ -33,7 +33,7 @@ object NetworkModule {
 
 
     // aynı wifi'da çalıştığına emin olun
-    private const val BASE_URL = "http://172.21.249.224:8080/"// Örnek localhost için emülatör adresi (Port 8080 varsayıldı)
+    private const val BASE_URL = "http://172.21.244.216:8080/"// Örnek localhost için emülatör adresi (Port 8080 varsayıldı)
 
     @Provides
     @Singleton
