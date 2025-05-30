@@ -1,0 +1,183 @@
+// Application-level build file where you can add configuration options for only this module.
+// This file configures the build settings specifically for the app module.
+
+// Define the plugins required for this module
+plugins {
+    id 'com.android.application'  // The core Android application plugin
+    id 'org.jetbrains.kotlin.android'  // Plugin for Kotlin support in Android
+    id 'com.google.devtools.ksp'
+    id 'com.google.dagger.hilt.android' version '2.51.1' apply true
+    // Firebase bağlantısı için yazıldı.
+    // app level build.gradle dosyasında yazılır.
+    id 'com.google.gms.google-services'
+    id 'org.jetbrains.kotlin.plugin.compose'
+
+    id("kotlinx-serialization")
+}
+
+// Main Android configuration block
+android {
+    // The package name for your app
+    namespace 'com.travelassistant'
+    // The Android SDK version to compile against
+    compileSdk 34
+
+    // Default configuration for the application
+    defaultConfig {
+        // The unique identifier for your app on the Play Store
+        applicationId "com.travelassistant"
+        // Minimum Android version your app supports
+        minSdk 24
+        // Android version your app is targeting
+        targetSdk 34
+        // Internal version number, increment for each release
+        versionCode 1
+        // User-visible version number
+        versionName "1.0"
+
+        // Configuration for Android testing
+        //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.travelassistant.CustomTestRunner"
+        // Support for vector drawables
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    // Configure different build variants
+    buildTypes {
+        // Configuration for release version
+        release {
+            // Disable code shrinking for now
+            minifyEnabled false
+            // ProGuard rules for code optimization
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    // Java version compatibility settings
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    // Kotlin-specific options
+    kotlinOptions {
+        // Target JVM version for Kotlin
+        jvmTarget = '17'
+    }
+
+    // Enable required build features
+    buildFeatures {
+        // Enable Jetpack Compose for UI
+        compose true
+    }
+
+    // Jetpack Compose specific options
+    composeOptions {
+        // Compose compiler version must match the library version
+        kotlinCompilerExtensionVersion rootProject.ext.compose_version
+    }
+
+    // Configure how resources are packaged
+    packaging {
+        resources {
+            // Exclude unnecessary legal files
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+
+    // Add SDK tools version compatibility
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+    arg("room.incremental", "true")
+    arg("room.expandProjection", "true")
+}
+
+// Dependencies required by the app
+dependencies {
+    implementation 'androidx.test.ext:junit-ktx:1.2.1'
+    implementation 'androidx.test:runner:1.6.2'
+    def room_version = rootProject.ext.room_version
+    def nav_version = rootProject.ext.nav_version
+
+    // Core Android
+    implementation 'androidx.core:core-ktx:1.12.0'                 // Kotlin extensions for Android core
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'// Lifecycle components
+    implementation 'androidx.activity:activity-compose:1.8.2'      // Activity support for Compose
+
+    // Compose
+    implementation platform('androidx.compose:compose-bom:2023.08.00')
+    implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.ui:ui-graphics'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    implementation 'androidx.compose.material3:material3'
+    
+    // Navigation Compose
+    implementation "androidx.navigation:navigation-compose:$nav_version"
+    
+    // Material Icons - Updated to use the correct package
+    implementation 'androidx.compose.material:material-icons-core:1.5.4'
+    implementation 'androidx.compose.material:material-icons-extended:1.5.4'
+
+    // Room
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    ksp "androidx.room:room-compiler:$room_version"
+    testImplementation "androidx.room:room-testing:$room_version"
+
+    // Gson for JSON conversion
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+    // Testing dependencies
+    testImplementation 'junit:junit:4.13.2'                               // Unit testing framework
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'            // Android testing support
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'// UI testing framework
+    androidTestImplementation platform('androidx.compose:compose-bom:2023.08.00')
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
+    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.51.1'
+    androidTestImplementation 'androidx.test:core-ktx:1.6.1'
+    androidTestImplementation 'androidx.test.ext:junit-ktx:1.2.1'
+    androidTestImplementation 'androidx.test:runner:1.6.2'
+    // Hilt Testing
+    kspAndroidTest 'com.google.dagger:hilt-compiler:2.56.2' // ksp kullanıyoruz
+    // Coroutines Test
+    androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3' // En güncel sürümü kontrol edin
+    
+    // Debug-only dependencies
+    debugImplementation 'androidx.compose.ui:ui-tooling'         // Compose tooling
+    debugImplementation 'androidx.compose.ui:ui-test-manifest'   // Test manifest
+
+    // WorkManager
+    implementation 'androidx.work:work-runtime-ktx:2.9.0'
+
+    // Hilt (for @Inject, @Singleton, etc.)
+    implementation 'com.google.dagger:hilt-android:2.51.1'
+    ksp 'com.google.dagger:hilt-compiler:2.51.1'
+
+    implementation 'androidx.hilt:hilt-navigation-compose:1.2.0'
+
+    // Firebase
+    implementation platform('com.google.firebase:firebase-bom:33.13.0')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-messaging-ktx'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3'
+
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:3.0.0" // En güncel stabil versiyonu kontrol et
+    implementation "com.squareup.retrofit2:converter-gson:3.0.0" // JSON işlemleri için Gson converter'ı
+    // OkHttp (Retrofit tarafından kullanılır, loglama için de faydalı)
+    implementation "com.squareup.okhttp3:okhttp:4.12.0" // En güncel stabil versiyonu kontrol et
+    implementation "com.squareup.okhttp3:logging-interceptor:4.12.0" // Network logları için (NetworkModule'de kullanmıştık)
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+
+} 
